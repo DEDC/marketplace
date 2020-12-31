@@ -1,0 +1,28 @@
+{% extends 'mkt/base.html' %}
+{% block auth_message %}
+{% endblock %}
+{% block main %}
+<div class="container">
+    <div class="row">
+        <div class="col l8 offset-l2">
+            <div class="card-panel">
+                <h5><a class="grey-text text-darken-2" href="{% url 'mkt:marketplace' %}">Iniciar sesión</a></h5>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="input-field">
+                        {{flogin.username.label_tag}}
+                        {{flogin.username}}
+                        <span class="help-text red-text">{{flogin.username.errors}}</span>
+                    </div>
+                    <div class="input-field">
+                        {{flogin.password.label_tag}}
+                        {{flogin.password}}
+                        <span class="help-text red-text">{{flogin.password.errors}}</span>
+                    </div>
+                    <button class="btn-large btn-width orange lighten-1">Ingresar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

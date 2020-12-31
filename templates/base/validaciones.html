@@ -1,0 +1,28 @@
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == 'error' %}
+<div class="uk-alert-danger" uk-alert>
+	<a class="uk-alert-close" uk-close></a>
+	<p>{{message|safe}}</p>
+</div>
+{% endif %}
+{% if message.tags == 'success' %}
+<div class="uk-alert-success" uk-alert>
+	<a class="uk-alert-close" uk-close></a>
+	<p>{{message|safe}}</p>
+</div>
+{% endif %}
+{% if message.tags == 'warning' %}
+<div class="uk-alert-warning" uk-alert>
+	<a class="uk-alert-close" uk-close></a>
+	<p>{{message|safe}}</p>
+</div>
+{% endif %}
+{% if message.tags == 'info' %}
+<div class="uk-alert-primary" uk-alert>
+	<a class="uk-alert-close" uk-close></a>
+	<p>{{message|safe}}</p>
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}

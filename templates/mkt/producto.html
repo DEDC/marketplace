@@ -1,0 +1,46 @@
+{% extends 'mkt/base.html' %}
+{% load static %}
+{% load humanize %}
+{% load customtags %}
+{% block main %}
+<div class="container">
+    <div class="row">
+        <div class="col l7">
+            <div class="card-panel center-align">
+                <img src="{{producto.imagen.url}}" alt="{{producto.nombre}}" class="responsive-img">
+                <div class="divider" style="margin-top: 20px;"></div>
+                <h5 class="left-align pdt-name grey-text text-darken-2">Descripción</h5>
+                <p>
+                <h6 class="left-align grey-text text-darken-2">{{producto.descripcion}}</h6>
+                </p>
+            </div>
+        </div>
+        <div class="col l5">
+            <div class="card-panel">
+                <h6 class="pdt-name grey-text text-darken-2">{{producto.nombre}}</h6>
+                <h5 class="pdt-price grey-text text-darken-3">$ {{producto.precio|intcomma}}</h5>
+                <form action="{% url 'mkt:agCarrito' %}" method="post">
+                    {% csrf_token %}
+                    <select class="browser-default pdt-quantity" name="pdt-quantity">
+                        <option value="" disabled selected>Elige una cantidad</option>
+                        {% for u in producto.cantidad|int_to_range %}
+                        {% if forloop.first %}
+                        <option value="{{forloop.counter}}">{{forloop.counter}} unidad</option>
+                        {% else %}
+                        <option value="{{forloop.counter}}">{{forloop.counter}} unidades</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                    <p class="center-align grey-text">{{producto.cantidad}} disponibles</p>
+                    <input type="hidden" name="pdt-id" value="{{producto.uuid}}">
+                    <input type="hidden" name="url-origin" value="{{request.build_absolute_uri}}">
+                    <button class="btn-large orange lighten-1" type="submit">Comprar ahora</button>
+                    <button class="btn orange lighten-1" type="submit" style="margin-top: 10px;">Agregar al carrito
+                        <i class="material-icons right">add_shopping_cart</i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

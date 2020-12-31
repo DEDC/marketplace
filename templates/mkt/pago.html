@@ -1,0 +1,181 @@
+{% extends 'mkt/base.html' %}
+{% block head %}
+{{block.super}}
+<script type="text/javascript" src="https://js.openpay.mx/openpay.v1.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script type='text/javascript' src="https://js.openpay.mx/openpay-data.v1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        OpenPay.setId('mpelhavr5dmqvjndxovd');
+        OpenPay.setApiKey('pk_a26b9f761b9a433a97bc37e8df73b9b7');
+        OpenPay.setSandboxMode(true);
+        var deviceSessionId = OpenPay.deviceData.setup("payment-form", "deviceIdHiddenFieldName");
+        $('#pay-button').on('click', function (event) {
+            event.preventDefault();
+            $("#pay-button").prop("disabled", true);
+            OpenPay.token.extractFormAndCreate('payment-form', success_callbak, error_callbak);
+        });
+        var success_callbak = function (response) {
+            var token_id = response.data.id;
+            $('#token_id').val(token_id);
+            alert('todo salió bien')
+            $('#payment-form').submit();
+        };
+        var error_callbak = function (response) {
+            var desc = response.data.description != undefined ?
+                response.data.description : response.message;
+            alert("ERROR [" + response.status + "] " + desc);
+            $("#pay-button").prop("disabled", false);
+        };
+    });
+</script>
+{% endblock %}
+{% load static %}
+{% load humanize %}
+{% block cart %}
+{% endblock %}
+{% block main %}
+<div class="container">
+    <div class="card-panel">
+        <h5 class="pdt-name">Productos seleccionados</h5>
+        {% for item, value in cart.items %}
+        <div class="divider"></div>
+        <div class="row div-flex" style="margin-top: 20px;">
+            <div class="col l3">
+                <img src="{{value.pdt_image}}" alt="" class="responsive-img">
+            </div>
+            <div class="col l9">
+                <p>
+                <h5 class="pdt-name">{{value.pdt_name}}</h5>
+                <br>
+                <h6 class="black-text">$ <b>{{value.pdt_price|intcomma}}</b> mxn</h6>
+                <br>
+                <span>{{value.pdt_quantity}} unidad(es) seleccionada(s)</span>
+                <br>
+                <span class="grey-text">{{value.stock}} disponible(s)</span>
+                </p>
+                <form action="{% url 'mkt:actCarrito' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="pdt-id" value="{{value.pdt_uuid}}">
+                    <input type="hidden" name="url-origin" value="{{request.build_absolute_uri}}">
+                    <div>
+                        <div class="uk-button-group">
+                            <button name="increment" class="btn-small btn-flat white"><i
+                                    class="tiny material-icons">add</i></button>
+                            <button name="decrement" class="btn-small btn-flat white"><i
+                                    class="tiny material-icons">remove</i></button>
+                            <button name="remove" class="btn-small btn-flat white"><i
+                                    class="tiny material-icons">close</i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+        <h4 style="text-align: right;">Total:&nbsp;&nbsp;<b>$ {{total|intcomma}} mxn</b></h4>
+    </div>
+    <form action="" method="post" id="payment-form">
+        <div class="card-panel">
+            <div class="container" style="width: 90% !important;">
+                <h5 class="pdt-name">Información de envío</h5>
+                <div class="row">
+                    <div class="col l12 m12 s12">
+                        <div class="input-field">
+                            <label for="name_id">Nombre</label>
+                            <input type="text" name="name" autocomplete="off" id="name_id">
+                        </div>
+                        <div class="input-field">
+                            <label for="last_name_id">Apellido</label>
+                            <input type="text" name="last_name" autocomplete="off" id="last_name_id">
+                        </div>
+                        <div class="input-field">
+                            <label for="email_id">Correo electrónico</label>
+                            <input type="text" name="email" id="email_id">
+                        </div>
+                        <div class="input-field">
+                            <label for="phone_number_id">Número de teléfono</label>
+                            <input type="text" name="phone_number" id="phone_number_id">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-panel">
+            <div class="container" style="width: 90% !important;">
+                <h5 class="pdt-name">Información de pago</h5>
+                {% csrf_token %}
+                <input type="hidden" name="token_id" id="token_id">
+                <div class="row">
+                    <div class="col l12 m12 s12">
+                        <div class="input-field">
+                            <label for="hn">Nombre del titular</label>
+                            <input type="text" autocomplete="off" data-openpay-card="holder_name" id="hn">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col l12 m12 s12">
+                        <div class="input-field">
+                            <label for="cn">Número de tarjeta</label>
+                            <input type="text" autocomplete="off" data-openpay-card="card_number" id="cn">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col l4">
+                        <label for="em">Mes de expiración</label>
+                        <input type="text" data-openpay-card="expiration_month" id="em">
+                    </div>
+                    <div class="input-field col l4">
+                        <label for="ey">Año de expiración</label>
+                        <input type="text" data-openpay-card="expiration_year" id="ey" maxlength="2">
+                    </div>
+                    <div class="input-field col l4">
+                        <label for="cv">Código de seguridad (CVV)</label>
+                        <input type="text" autocomplete="off" data-openpay-card="cvv2" id="cv">
+                    </div>
+                </div>
+                <div class="row center-align">
+                    <p>
+                        <label>
+                            <input type="checkbox" id="terms-payment" />
+                            <span class="black-text">He leído y acepto los <a href="#" target="_blank">Términos y
+                                    Condiciones</a></span>
+                        </label>
+                    </p>
+                </div>
+                <div class="row right">
+                    {% if not request.user.is_authenticated %}
+                    <input type="submit" class="btn-large orange lighten-1 right" value="Pagar" id="pay-button">
+                    {% else %}
+                    <input type="submit" id="pay-button-lg" class="btn-large orange lighten-1" value="Inicia sesión">
+                    <input type="submit" id="pay-button-lg" class="btn-large orange lighten-1" value="Regístrate">
+                    {% endif %}
+                </div>
+
+            </div>
+            <div class="row">
+                <br>
+                <div class="col offset-l2 l3">
+                    <p>TARJETAS DE CRÉDITO</p>
+                    <img src="{% static 'opp/cards1.png' %}" alt="" class="responsive-img">
+                </div>
+                <div class="col l5">
+                    <p>TARJETAS DE DÉBITO</p>
+                    <img src="{% static 'opp/cards2.png' %}" alt="" class="responsive-img">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col offset-l2 l3">
+                    <span>Transacciones vía:</span>
+                    <img src="{% static 'opp/openpay.png' %}" alt="">
+                </div>
+                <div class="col l5">
+                    <img src="{% static 'opp/security.png' %}" alt="">
+                    <span>Tus pagos se realizan de forma segura con encriptación de 256 bits</span>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

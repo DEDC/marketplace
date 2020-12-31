@@ -1,0 +1,26 @@
+{% extends 'mkt/base.html' %}
+{% load humanize %}
+{% load customtags %}
+{% block main %}
+<div class="container">
+    <div class="row" style="display: flex;
+        flex-wrap: wrap; align-items: center;">
+        {% for p in productos %}
+        <div class="col xl4 l3 m6 s12">
+            <div class="pdt">
+                <a href="{% url 'mkt:producto' p.slug p.uuid %}">
+                    <div class="card-panel hoverable">
+                        <div class="center-align">
+                            <img class="responsive-img" src="{{p.imagen.url}}" alt="">
+                        </div>
+                        <h6 class="pdt-name grey-text text-darken-2">{{p.nombre}}</h6>
+                        <h5 class="pdt-price grey-text text-darken-3">$ {{p.precio|intcomma}}</h5>
+                        <span class="grey-text">{{p.cantidad}} disponibles</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

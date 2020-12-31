@@ -1,0 +1,47 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load humanize %}
+{% load customtags %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/home_styles.css' %}">
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('select');
+        var instances = M.FormSelect.init(elems);
+    });
+</script>
+{% endblock %}
+{% block body %}
+{% block header %}
+<header class="container">
+    <h4><a class="grey-text text-darken-2" href="{% url 'mkt:marketplace' %}">MarketPlace</a></h4>
+    {% block cart %}
+    {% cart request %}
+    {% endblock %}
+</header>
+<div class="divider"></div>
+{% endblock %}
+<main>
+    {% block auth_message %}
+    <div class="container">
+        {% if not request.user.is_authenticated %}
+        <div class="row">
+            <h6 class="right">Es necesario <a
+                    href="{% url 'user:login' %}?redirect_to={{request.build_absolute_uri}}">Iniciar sesión</a> o <a
+                    href="{% url 'user:rUsuario' %}?redirect_to={{request.build_absolute_uri}}">crear una cuenta</a>
+            </h6>
+        </div>
+        {% else %}
+        {{user.get_full_name}}
+        {% endif %}
+    </div>
+    {% endblock %}
+    {% block validations %}
+    <div class="container">
+        {% include 'base/validaciones.html' %}
+    </div>
+    {% endblock %}
+    {% block main %}
+    {% endblock %}
+</main>
+{% endblock %}
