@@ -1,10 +1,86 @@
-{% extends 'base/base.html' %}
-{% block body %}
-<div class="container">
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{fproducto.as_p}}
-        <button type="submit">Agregar</button>
-    </form>
+{% extends 'admin/base.html' %}
+{% block main %}
+<div class="container container-lg container-margin">
+    {% include 'base/validaciones.html' %}
+    <div class="options">
+        <div class="btns">
+            <a class="btn grey darken-2" href="{% url 'admin:list_products' %}">Listado<i
+                    class="material-icons left">list</i></a>
+        </div>
+    </div>
+    <div class="card-panel">
+        <h5 class="center-align grey-text text-darken-2"><b>Registro de un producto</b></h5>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col l12 m12 s12">
+                    <div class="input-field">
+                        {{form.nombre.label_tag}}
+                        {{form.nombre}}
+                        <span class="helper-text red-text">{{form.nombre.errors}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col l12 m12 s12">
+                    <div class="input-field">
+                        {{form.descripcion.label_tag}}
+                        {{form.descripcion}}
+                        <span class="helper-text red-text">{{form.descripcion.errors}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col l6 m12 s12">
+                    <div class="input-field">
+                        {{form.precio.label_tag}}
+                        {{form.precio}}
+                        <span class="helper-text red-text">{{form.precio.errors}}</span>
+                    </div>
+                </div>
+                <div class="col l6 m12 s12">
+                    <div class="input-field">
+                        {{form.cantidad.label_tag}}
+                        {{form.cantidad}}
+                        <span class="helper-text red-text">{{form.cantidad.errors}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col l6 m12 s12">
+                    <div class="input-field">
+                        {{form.comision.label_tag}}
+                        {{form.comision}}
+                        <span class="helper-text red-text">{{form.comision.errors}}</span>
+                    </div>
+                </div>
+                <div class="col l6 m12 s12">
+                    <div class="input-field">
+                        {{form.tipo_comision}}
+                        {{form.tipo_comision.label_tag}}
+                        <span class="helper-text red-text">{{form.tipo_comision.errors}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col l12 m12 s12">
+                    <div class="file-field input-field">
+                        <div class="btn grey">
+                            <span>{{form.imagen.label}}</span>
+                            {{form.imagen}}
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path" type="text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col l12 m12 s12">
+                    <button class="btn grey darken-2 btn-block" type="submit">Registrar producto</button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

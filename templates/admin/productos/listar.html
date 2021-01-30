@@ -1,0 +1,50 @@
+{% extends 'admin/base.html' %}
+{% load humanize %}
+{% block main %}
+<div class="container container-lg container-margin">
+    <div class="options">
+        <div class="btns">
+            <a class="btn grey darken-2" href="{% url 'admin:create_product' %}">Agregar<i
+                    class="material-icons left">add</i></a>
+        </div>
+        <form>
+            <span uk-search-icon></span>
+            <input type="text" name="search" id="search" style="width: 200px;">
+        </form>
+    </div>
+    <div class="card-panel">
+        <h5 class="grey-text center-align text-darken-2"><b>Listado de productos</b></h5>
+        <p class="grey-text">{{object_list.count}} resultado(s)</p>
+        <table class="striped responsive-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Descripción</th>
+                    <th>Comisión</th>
+                    <th>Tipo de comisión</th>
+                    <th>Imagen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pdt in object_list %}
+                <tr>
+                    <td>{{pdt.nombre}}</td>
+                    <td>${{pdt.precio|intcomma}}</td>
+                    <td>{{pdt.cantidad}}</td>
+                    <td>{{pdt.descripcion}}</td>
+                    <td>${{pdt.comision|intcomma}}</td>
+                    <td>{{pdt.get_tipo_comision_display}}</td>
+                    <td>
+                        <div uk-lightbox>
+                            <a href="{{pdt.imagen.url}}" class="grey-text"><i class="material-icons">wallpaper</i></a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -13,9 +13,7 @@
         <div class="nav-wrapper grey darken-2">
             <!-- <a href="#" class="brand-logo">Logo</a> -->
             <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="sass.html">Sass</a></li>
-                <li><a href="badges.html">Components</a></li>
-                <li><a href="collapsible.html">JavaScript</a></li>
+                <li><a href="sass.html">Cerrar sesión</a></li>
             </ul>
         </div>
     </nav>
@@ -24,11 +22,21 @@
 {% block sidenav %}
 <aside>
     <ul id="slide-out" class="sidenav sidenav-fixed">
-        <li><a href="#!" class='dropdown-trigger' data-target='dropdown1'><i class="material-icons">add</i>hola mi hno</a></li>
-    </ul>
-    <ul id='dropdown1' class='dropdown-content'>
-        <li><a href="#!"><i class="material-icons">add</i></a></li>
-        <li><a href="#!">two</a></li>
+        <li class="no-padding">
+            <ul class="collapsible collapsible-accordion">
+                <li>
+                    <a class="collapsible-header">Productos<i class="material-icons">widgets</i></a>
+                    <div class="collapsible-body">
+                        <ul>
+                            <li><a href="{% url 'admin:create_product' %}"><i class="material-icons">add</i>Agregar</a>
+                            </li>
+                            <li><a href="{% url 'admin:list_products' %}"><i class="material-icons">list</i>Listar</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </li>
     </ul>
 </aside>
 {% endblock %}

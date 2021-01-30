@@ -4,3 +4,5 @@ var collapsible = document.querySelectorAll('.collapsible');
 var col_instances = M.Collapsible.init(collapsible);
 var dropdown = document.querySelectorAll('.dropdown-trigger');
 var drp_instances = M.Dropdown.init(dropdown);
+var select = document.querySelectorAll('select');
+var select_instances = M.FormSelect.init(select);

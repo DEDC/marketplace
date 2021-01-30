@@ -11,6 +11,8 @@ class Productos(ControlInfo):
     precio = models.DecimalField('Precio unitario', max_digits = 10, decimal_places = 2, validators = [MinValueValidator(1.00), MaxValueValidator(10000000.00)])
     cantidad = models.PositiveIntegerField('Cantidad disponible', validators = [MaxValueValidator(100000)])
     descripcion = models.CharField('Descripción del producto', max_length = 200)
+    comision = models.DecimalField('Comisión del producto', max_digits = 10, decimal_places = 2, validators = [MinValueValidator(1.00), MaxValueValidator(10000000.00)], null = True)
+    tipo_comision = models.CharField('Tipo de comisión', max_length = 50, choices = [('directa', 'Por monto directo'), ('porcentaje', 'Por porcentaje')], null = True)
     imagen = models.ImageField('Imagen principal', upload_to = path_image)
     
     def save(self, *args, **kwargs):

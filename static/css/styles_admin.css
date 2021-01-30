@@ -1,21 +1,58 @@
 .sidenav {
-    width: 88px !important;
+    width: 230px !important;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+nav a, .btn {
+    color: white !important;
 }
 
 .sidenav li a i {
-    margin: 0 !important;
+    margin: 0 10px 0 0 !important;
 }
 
 header, main, footer {
-    padding-left: 88px;
+    padding-left: 230px;
 }
 
 .container-lg {
     width: 90% !important;
 }
 
+.container-margin {
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
 @media only screen and (max-width: 992px) {
     header, main, footer {
         padding-left: 0;
     }
+}
+
+html {
+    background: #f1f2f7;
+}
+
+.card-panel {
+    webkit-box-shadow: 0 0 20px rgb(0 0 0 / 8%) !important;
+    box-shadow: 0 0 20px rgb(0 0 0 / 8%) !important;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+form .row {
+    margin-bottom: 0 !important;
+}
+
+.options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
