@@ -14,7 +14,10 @@
             <!-- <a href="#" class="brand-logo">Logo</a> -->
             <ul id="nav-mobile" class="right hide-on-med-and-down">
                 <li><a href="sass.html">Cerrar sesión</a></li>
+                <li><a href="#" data-target="slide-out" class="sidenav-trigger"><i
+                            class="material-icons">menu</i></a></li>
             </ul>
+            <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         </div>
     </nav>
 </header>
@@ -31,6 +34,32 @@
                             <li><a href="{% url 'admin:create_product' %}"><i class="material-icons">add</i>Agregar</a>
                             </li>
                             <li><a href="{% url 'admin:list_products' %}"><i class="material-icons">list</i>Listar</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </li>
+        <li class="no-padding">
+            <ul class="collapsible collapsible-accordion">
+                <li>
+                    <a class="collapsible-header">Ventas<i class="material-icons">trending_up</i></a>
+                    <div class="collapsible-body">
+                        <ul>
+                            <li><a href="{% url 'admin:list_sales' %}"><i class="material-icons">list</i>Listar</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </li>
+        <li class="no-padding">
+            <ul class="collapsible collapsible-accordion">
+                <li>
+                    <a class="collapsible-header">Envíos<i class="material-icons">moped</i></a>
+                    <div class="collapsible-body">
+                        <ul>
+                            <li><a href="{% url 'admin:list_shipping' %}"><i class="material-icons">list</i>Listar</a>
                             </li>
                         </ul>
                     </div>

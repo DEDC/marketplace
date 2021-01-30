@@ -1,0 +1,40 @@
+{% extends 'admin/base.html' %}
+{% load humanize %}
+{% block main %}
+<div class="container container-lg container-margin">
+    <div class="options">
+        <div class="btns">
+            <a class="btn grey darken-2" href="{% url 'admin:create_product' %}">Agregar<i
+                    class="material-icons left">add</i></a>
+        </div>
+        <form>
+            <span uk-search-icon></span>
+            <input type="text" name="search" id="search" style="width: 200px;">
+        </form>
+    </div>
+    <div class="card-panel">
+        <h5 class="grey-text center-align text-darken-2"><b>Listado de ventas</b></h5>
+        <p class="grey-text">{{object_list.count}} resultado(s)</p>
+        <table class="striped responsive-table">
+            <thead>
+                <tr>
+                    <th>UUID</th>
+                    <th>Total</th>
+                    <th>Fecha</th>
+                    <th>Productos</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vt in object_list %}
+                <tr>
+                    <td>{{vt.uuid}}</td>
+                    <td>{{vt.total|intcomma}}</td>
+                    <td>{{vt.fecha_reg}}</td>
+                    <td>{{vt.productos.count}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

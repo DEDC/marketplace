@@ -8,12 +8,13 @@ from django.views import View
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
 # app mkt
-from apps.mkt.models import Productos
+from apps.mkt.models import Productos, Ventas, Envios
 
 class vAdmin(View):
     def get(self, request, *args, **kwargs):
         return render(request, 'admin/home.html')
 
+# Products
 class CreateProduct(SuccessMessageMixin, CreateView):
     model = Productos
     fields = ['nombre', 'precio', 'cantidad', 'descripcion', 'imagen', 'comision', 'tipo_comision']
@@ -28,3 +29,13 @@ class CreateProduct(SuccessMessageMixin, CreateView):
 class ListProducts(ListView):
     model = Productos
     template_name = 'admin/productos/listar.html'
+
+# Sales
+class ListSales(ListView):
+    model = Ventas
+    template_name = 'admin/ventas/listar.html'
+
+# Shipping
+class ListShipping(ListView):
+    model = Envios
+    template_name = 'admin/envios/listar.html'
