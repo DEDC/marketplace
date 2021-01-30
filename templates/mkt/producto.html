@@ -19,7 +19,7 @@
             <div class="card-panel">
                 <h6 class="pdt-name grey-text text-darken-2">{{producto.nombre}}</h6>
                 <h5 class="pdt-price grey-text text-darken-3">$ {{producto.precio|intcomma}}</h5>
-                <form action="{% url 'mkt:agCarrito' %}" method="post">
+                <form method="post">
                     {% csrf_token %}
                     <select class="browser-default pdt-quantity" name="pdt-quantity">
                         <option value="" disabled selected>Elige una cantidad</option>
@@ -34,8 +34,10 @@
                     <p class="center-align grey-text">{{producto.cantidad}} disponibles</p>
                     <input type="hidden" name="pdt-id" value="{{producto.uuid}}">
                     <input type="hidden" name="url-origin" value="{{request.build_absolute_uri}}">
-                    <button class="btn-large orange lighten-1" type="submit">Comprar ahora</button>
-                    <button class="btn orange lighten-1" type="submit" style="margin-top: 10px;">Agregar al carrito
+                    <button formaction="{% url 'mkt:comprar' %}" class="btn-large orange lighten-1"
+                        type="submit">Comprar ahora</button>
+                    <button formaction="{% url 'mkt:agCarrito' %}" class="btn orange lighten-1" type="submit"
+                        style="margin-top: 10px;">Agregar al carrito
                         <i class="material-icons right">add_shopping_cart</i>
                     </button>
                 </form>

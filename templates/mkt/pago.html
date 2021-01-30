@@ -1,33 +1,83 @@
 {% extends 'mkt/base.html' %}
 {% block head %}
 {{block.super}}
-<script type="text/javascript" src="https://js.openpay.mx/openpay.v1.min.js"></script>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-<script type='text/javascript' src="https://js.openpay.mx/openpay-data.v1.min.js"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        OpenPay.setId('mpelhavr5dmqvjndxovd');
-        OpenPay.setApiKey('pk_a26b9f761b9a433a97bc37e8df73b9b7');
-        OpenPay.setSandboxMode(true);
-        var deviceSessionId = OpenPay.deviceData.setup("payment-form", "deviceIdHiddenFieldName");
-        $('#pay-button').on('click', function (event) {
+<style>
+    /**
+ * The CSS shown here will not be introduced in the Quickstart guide, but shows
+ * how you can use CSS to style your Element's container.
+ */
+    .StripeElement {
+        box-sizing: border-box;
+
+        height: 40px;
+
+        padding: 10px 12px;
+
+        border: 1px solid transparent;
+        border-radius: 4px;
+        background-color: white;
+
+        box-shadow: 0 1px 3px 0 #e6ebf1;
+        -webkit-transition: box-shadow 150ms ease;
+        transition: box-shadow 150ms ease;
+    }
+
+    .StripeElement--focus {
+        box-shadow: 0 1px 3px 0 #cfd7df;
+    }
+
+    .StripeElement--invalid {
+        border-color: #fa755a;
+    }
+
+    .StripeElement--webkit-autofill {
+        background-color: #fefde5 !important;
+    }
+</style>
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var stripe = Stripe('pk_test_51I7T2kE4OKuuVvsDzt6ZZA4jnOq18zmAKFsNh7p3zJ8qAOoPPppvnPOGXQcfGBHCLoxupyKCsWg6flBeKFXreuHD00vOFme0XO')
+        var elements = stripe.elements()
+        var style = {
+            base: {
+                color: '#32325d',
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '20px',
+                '::placeholder': {
+                    color: '#aab7c4'
+                }
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+            }
+        };
+        var card = elements.create('card', { style: style })
+        card.mount('#card-element')
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function (event) {
             event.preventDefault();
-            $("#pay-button").prop("disabled", true);
-            OpenPay.token.extractFormAndCreate('payment-form', success_callbak, error_callbak);
+            stripe.createToken(card).then(function (result) {
+                if (result.error) {
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                } else {
+                    stripeTokenHandler(result.token);
+                }
+            });
         });
-        var success_callbak = function (response) {
-            var token_id = response.data.id;
-            $('#token_id').val(token_id);
-            alert('todo salió bien')
-            $('#payment-form').submit();
-        };
-        var error_callbak = function (response) {
-            var desc = response.data.description != undefined ?
-                response.data.description : response.message;
-            alert("ERROR [" + response.status + "] " + desc);
-            $("#pay-button").prop("disabled", false);
-        };
-    });
+        function stripeTokenHandler(token) {
+            var form = document.getElementById('payment-form');
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'stripeToken');
+            hiddenInput.setAttribute('value', token.id);
+            form.appendChild(hiddenInput);
+            form.submit();
+        }
+    })
 </script>
 {% endblock %}
 {% load static %}
@@ -76,105 +126,54 @@
     </div>
     <form action="" method="post" id="payment-form">
         <div class="card-panel">
+            <h5 class="pdt-name">Información de envío</h5>
+            <div class="divider"></div>
             <div class="container" style="width: 90% !important;">
-                <h5 class="pdt-name">Información de envío</h5>
+                <br>
+                {% if not request.user.is_authenticated %}
                 <div class="row">
-                    <div class="col l12 m12 s12">
-                        <div class="input-field">
-                            <label for="name_id">Nombre</label>
-                            <input type="text" name="name" autocomplete="off" id="name_id">
-                        </div>
-                        <div class="input-field">
-                            <label for="last_name_id">Apellido</label>
-                            <input type="text" name="last_name" autocomplete="off" id="last_name_id">
-                        </div>
-                        <div class="input-field">
-                            <label for="email_id">Correo electrónico</label>
-                            <input type="text" name="email" id="email_id">
-                        </div>
-                        <div class="input-field">
-                            <label for="phone_number_id">Número de teléfono</label>
-                            <input type="text" name="phone_number" id="phone_number_id">
-                        </div>
+                    <h6 class="center-align">Es necesario <a
+                            href="{% url 'user:login' %}?redirect_to={{request.build_absolute_uri}}">Iniciar sesión</a>
+                        o <a href="{% url 'user:rUsuario' %}?redirect_to={{request.build_absolute_uri}}">crear una
+                            cuenta</a>
+                    </h6>
+                </div>
+                {% else %}
+                <a href="{% url 'user:rDirecciones' %}" class="btn orange lighten-1 right"><i
+                        class="material-icons">add</i></a>
+                {% endif %}
+                {% for d in user.direcciones.all %}
+                <div class="row">
+                    <div class="col l1"><label><input class="with-gap" name="address" type="radio"
+                                value="{{d.id}}" /><span></span></label></div>
+                    <div class="col 11"><span class="title">{{d.calle}} {{d.no_calle}} / {{d.colonia}}</span>
+                        <p>{{d.referencias}}</p>
+                        <p>{{d.instrucciones}}</p>
                     </div>
                 </div>
+                {% empty %}
+                <br>
+                <h6 class="center-align grey-text">No ha registrado direcciones</h6>
+                {% endfor %}
             </div>
         </div>
         <div class="card-panel">
+            <h5 class="pdt-name">Información de pago</h5>
+            <div class="divider"></div>
             <div class="container" style="width: 90% !important;">
-                <h5 class="pdt-name">Información de pago</h5>
-                {% csrf_token %}
-                <input type="hidden" name="token_id" id="token_id">
-                <div class="row">
-                    <div class="col l12 m12 s12">
-                        <div class="input-field">
-                            <label for="hn">Nombre del titular</label>
-                            <input type="text" autocomplete="off" data-openpay-card="holder_name" id="hn">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col l12 m12 s12">
-                        <div class="input-field">
-                            <label for="cn">Número de tarjeta</label>
-                            <input type="text" autocomplete="off" data-openpay-card="card_number" id="cn">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="input-field col l4">
-                        <label for="em">Mes de expiración</label>
-                        <input type="text" data-openpay-card="expiration_month" id="em">
-                    </div>
-                    <div class="input-field col l4">
-                        <label for="ey">Año de expiración</label>
-                        <input type="text" data-openpay-card="expiration_year" id="ey" maxlength="2">
-                    </div>
-                    <div class="input-field col l4">
-                        <label for="cv">Código de seguridad (CVV)</label>
-                        <input type="text" autocomplete="off" data-openpay-card="cvv2" id="cv">
-                    </div>
-                </div>
-                <div class="row center-align">
-                    <p>
-                        <label>
-                            <input type="checkbox" id="terms-payment" />
-                            <span class="black-text">He leído y acepto los <a href="#" target="_blank">Términos y
-                                    Condiciones</a></span>
+                <form action="/charge" method="post" id="payment-form">
+                    <div class="form-row">
+                        <label for="card-element">
                         </label>
-                    </p>
-                </div>
-                <div class="row right">
-                    {% if not request.user.is_authenticated %}
-                    <input type="submit" class="btn-large orange lighten-1 right" value="Pagar" id="pay-button">
-                    {% else %}
-                    <input type="submit" id="pay-button-lg" class="btn-large orange lighten-1" value="Inicia sesión">
-                    <input type="submit" id="pay-button-lg" class="btn-large orange lighten-1" value="Regístrate">
-                    {% endif %}
-                </div>
-
+                        <br>
+                        <div id="card-element"></div>
+                        <div id="card-errors" role="alert"></div>
+                    </div>
+                    <br>
+                    <button class="btn orange lighten-1">Pagar</button>
+                </form>
             </div>
-            <div class="row">
-                <br>
-                <div class="col offset-l2 l3">
-                    <p>TARJETAS DE CRÉDITO</p>
-                    <img src="{% static 'opp/cards1.png' %}" alt="" class="responsive-img">
-                </div>
-                <div class="col l5">
-                    <p>TARJETAS DE DÉBITO</p>
-                    <img src="{% static 'opp/cards2.png' %}" alt="" class="responsive-img">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col offset-l2 l3">
-                    <span>Transacciones vía:</span>
-                    <img src="{% static 'opp/openpay.png' %}" alt="">
-                </div>
-                <div class="col l5">
-                    <img src="{% static 'opp/security.png' %}" alt="">
-                    <span>Tus pagos se realizan de forma segura con encriptación de 256 bits</span>
-                </div>
-            </div>
+            {% csrf_token %}
         </div>
     </form>
 </div>

@@ -31,8 +31,6 @@
                     href="{% url 'user:rUsuario' %}?redirect_to={{request.build_absolute_uri}}">crear una cuenta</a>
             </h6>
         </div>
-        {% else %}
-        {{user.get_full_name}}
         {% endif %}
     </div>
     {% endblock %}

@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .cart import Cart
-from .payment import PaymentOPP
+from .payment import PaymentStripe
 from apps.mkt.forms import fRegistroProducto, fExtra_Imagenes
+from apps.users.forms import fRegistroDirecciones
 from apps.mkt.models import Productos, Imagenes, Ventas, Envios
 import decimal
 
@@ -47,6 +48,21 @@ def vAgregarCarrito(request):
             pass
     return redirect('mkt:marketplace')
 
+def vComprar(request):
+    if request.method == 'POST':
+        pdt_uuid = request.POST.get('pdt-id', '')
+        pdt_quantity = request.POST.get('pdt-quantity', 1)
+        url_origin = request.POST.get('url-origin')
+        try:
+            producto = Productos.objects.get(uuid = pdt_uuid)
+            cart = Cart(request)
+            cart.add(producto, pdt_quantity)
+            return redirect('mkt:pagarCarrito')
+        except Productos.DoesNotExist:
+            pass
+    return redirect('mkt:marketplace')
+
+
 def vAccionesCarrito(request):
     if request.method == 'POST':
         pdt_uuid = request.POST.get('pdt-id', '')
@@ -89,20 +105,10 @@ def vPagarCarrito(request):
         cart = []
     if request.method == 'POST':
         default_message = 'No especificado'
-        # customer info
-        nombre = request.POST.get('nombre', default_message)
-        apellido = request.POST.get('apellido', default_message)
-        correo = request.POST.get('email', default_message)
-        telefono = request.POST.get('phone_number', default_message)
-        # charge info
-        descripcion = request.POST.get('description', default_message)
-        token = request.POST.get('token_id')
-        sesion_id = request.POST.get('deviceIdHiddenFieldName')
-        # payment
-        payment = PaymentOPP()
-        payment.create_customer(name = nombre, last_name = apellido, email = correo, phone_number = telefono)
-        charge = payment.customer_charge(token = token, device_session = sesion_id, amount = total, description = descripcion)
-        if charge['status'] == 'completed':
+        token = request.POST.get('stripeToken', '')
+        payment = PaymentStripe()
+        charge = payment.make_charge(amount = int(total*100), token = token)
+        if charge['status'] == 'succeeded':
             messages.success(request, 'Muchas gracias. Su compra se ha completado exitosamente.')
             # crear la venta
             venta = Ventas.objects.create(total = total)
@@ -115,5 +121,6 @@ def vPagarCarrito(request):
             # crear el envio
             Envios.objects.create(venta = venta)
         return redirect('mkt:pagarCarrito')
-    context = {'cart': cart, 'total': total}
+    fdireccion = fRegistroDirecciones(label_suffix = '')
+    context = {'cart': cart, 'total': total, 'fdireccion': fdireccion}
     return render(request, 'mkt/pago.html', context)

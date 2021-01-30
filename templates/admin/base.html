@@ -1,0 +1,39 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}MarketPlace | Admin{% endblock %}
+{% block head %}
+{{block.super}}
+<script defer src="{% static 'js/app.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/styles_admin.css' %}">
+{% endblock %}
+{% block body %}
+{% block navbar %}
+<header>
+    <nav>
+        <div class="nav-wrapper grey darken-2">
+            <!-- <a href="#" class="brand-logo">Logo</a> -->
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="sass.html">Sass</a></li>
+                <li><a href="badges.html">Components</a></li>
+                <li><a href="collapsible.html">JavaScript</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+{% endblock %}
+{% block sidenav %}
+<aside>
+    <ul id="slide-out" class="sidenav sidenav-fixed">
+        <li><a href="#!" class='dropdown-trigger' data-target='dropdown1'><i class="material-icons">add</i>hola mi hno</a></li>
+    </ul>
+    <ul id='dropdown1' class='dropdown-content'>
+        <li><a href="#!"><i class="material-icons">add</i></a></li>
+        <li><a href="#!">two</a></li>
+    </ul>
+</aside>
+{% endblock %}
+<main>
+    {% block main %}
+    {% endblock %}
+</main>
+{% endblock %}

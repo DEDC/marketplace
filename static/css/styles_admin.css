@@ -1,0 +1,21 @@
+.sidenav {
+    width: 88px !important;
+}
+
+.sidenav li a i {
+    margin: 0 !important;
+}
+
+header, main, footer {
+    padding-left: 88px;
+}
+
+.container-lg {
+    width: 90% !important;
+}
+
+@media only screen and (max-width: 992px) {
+    header, main, footer {
+        padding-left: 0;
+    }
+}

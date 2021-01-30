@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
-from .forms import fRegistroUsuarios, fLogin
+from .forms import fRegistroUsuarios, fLogin, fRegistroDirecciones
 
 def vRegistro(request):
     if request.method == 'POST':
@@ -47,3 +47,18 @@ def vLogin(request):
 def vLogout(request):
     logout(request)
     return redirect('mkt:marketplace')
+
+def vDirecciones(request):
+    if request.method == 'POST':
+        fdireccion = fRegistroDirecciones(request.POST, label_suffix = '')
+        if fdireccion.is_valid():
+            direccion = fdireccion.save(commit = False)
+            direccion.usuario = request.user
+            direccion.save()
+            messages.success(request, 'Ha agregado una dirección de envío')
+        else:
+            messages.error(request, 'Formulario inválido. Por favor corrija los errores marcados en rojo')
+    else:
+        fdireccion = fRegistroDirecciones(request.POST, label_suffix = '')
+    context = {'fdireccion': fdireccion}
+    return render(request, 'users/direccion.html', context)

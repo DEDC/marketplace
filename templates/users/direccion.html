@@ -1,0 +1,53 @@
+{% extends 'mkt/base.html' %}
+{% block main %}
+<div class="container">
+    <div class="card-panel">
+        <h5 class="pdt-name">Información de pago</h5>
+        <div class="divider"></div>
+        <div class="container" style="width: 90% !important;">
+            <form method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col l9 m12 s12">
+                        <div class="input-field">
+                            {{fdireccion.calle.label_tag}}
+                            {{fdireccion.calle}}
+                        </div>
+                    </div>
+                    <div class="col l3 m12 s12">
+                        <div class="input-field">
+                            {{fdireccion.no_calle.label_tag}}
+                            {{fdireccion.no_calle}}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col l12 m12 s12">
+                        <div class="input-field">
+                            {{fdireccion.colonia.label_tag}}
+                            {{fdireccion.colonia}}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col l12 m12 s12">
+                        <div class="input-field">
+                            {{fdireccion.referencias.label_tag}}
+                            {{fdireccion.referencias}}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col l12 m12 s12">
+                        <div class="input-field">
+                            {{fdireccion.instrucciones.label_tag}}
+                            {{fdireccion.instrucciones}}
+                        </div>
+                    </div>
+                </div>
+                <button class="btn orange lighten-1">Agregar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,7 +1,7 @@
 # Django
 from django import forms
 # App usuarios
-from .models import Usuarios
+from .models import Usuarios, Direcciones
 
 class fLogin(forms.Form):
     username = forms.CharField(label = 'Correo electrónico o teléfono', max_length = 100, label_suffix = '')
@@ -54,3 +54,11 @@ class fResetPasswordEmail(forms.Form):
 
 class fSetPasswordEmail(fResetPassword):
     current_password = None
+
+class fRegistroDirecciones(forms.ModelForm):
+    class Meta:
+        model = Direcciones
+        fields = '__all__'
+        widgets = {
+            'instrucciones': forms.TextInput(attrs = {'class': 'materialize-textarea'})
+        }
