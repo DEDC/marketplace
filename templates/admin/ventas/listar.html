@@ -18,7 +18,7 @@
         <table class="striped responsive-table">
             <thead>
                 <tr>
-                    <th>UUID</th>
+                    <th>Folio</th>
                     <th>Total</th>
                     <th>Fecha</th>
                     <th>Productos</th>
@@ -27,7 +27,7 @@
             <tbody>
                 {% for vt in object_list %}
                 <tr>
-                    <td>{{vt.uuid}}</td>
+                    <td>{{vt.folio}}</td>
                     <td>{{vt.total|intcomma}}</td>
                     <td>{{vt.fecha_reg}}</td>
                     <td>{{vt.productos.count}}</td>

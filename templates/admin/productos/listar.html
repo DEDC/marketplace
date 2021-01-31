@@ -15,36 +15,73 @@
     <div class="card-panel">
         <h5 class="grey-text center-align text-darken-2"><b>Listado de productos</b></h5>
         <p class="grey-text">{{object_list.count}} resultado(s)</p>
-        <table class="striped responsive-table">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Precio</th>
-                    <th>Cantidad</th>
-                    <th>Descripción</th>
-                    <th>Comisión</th>
-                    <th>Tipo de comisión</th>
-                    <th>Imagen</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for pdt in object_list %}
-                <tr>
-                    <td>{{pdt.nombre}}</td>
-                    <td>${{pdt.precio|intcomma}}</td>
-                    <td>{{pdt.cantidad}}</td>
-                    <td>{{pdt.descripcion}}</td>
-                    <td>${{pdt.comision|intcomma}}</td>
-                    <td>{{pdt.get_tipo_comision_display}}</td>
-                    <td>
-                        <div uk-lightbox>
-                            <a href="{{pdt.imagen.url}}" class="grey-text"><i class="material-icons">wallpaper</i></a>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <ul class="collapsible">
+            {% for pdt in object_list %}
+            <li>
+                <div class="collapsible-header">
+                    <i class="material-icons grey-text text-darken-2">widgets</i>
+                    <b class="grey-text text-darken-2">{{pdt.folio}}</b>&nbsp;&nbsp;
+                    <b class="grey-text">{{pdt.nombre}}</b>
+                    <div class="collapsible-secondary not-collapse">
+                        <a class='dropdown-trigger' href='#' data-target='dropdown1'><i
+                                class="material-icons grey-text text-darken-2">more_vert</i></a>
+                        <ul id='dropdown1' class='dropdown-content'>
+                            <li><a href="{% url 'admin:update_product' pdt.pk pdt.slug %}"
+                                    class="grey-text text-darken-2"><i class="material-icons">edit</i>Editar</a></li>
+                            <li><a href="#!" class="grey-text text-darken-2"><i
+                                        class="material-icons">delete</i>Eliminar</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="collapsible-body">
+                    <table class="striped responsive-table">
+                        <tr>
+                            <th>Folio</th>
+                            <td><a target="__blank" href="{% url 'mkt:producto' pdt.slug pdt.uuid %}">{{pdt.folio}}</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Nombre</th>
+                            <td>{{pdt.nombre}}</td>
+                        </tr>
+                        <tr>
+                            <th>Precio</th>
+                            <td>${{pdt.precio|intcomma}}</td>
+                        </tr>
+                        <tr>
+                            <th>Cantidad</th>
+                            <td>{{pdt.cantidad}}</td>
+                        </tr>
+                        <tr>
+                            <th>Descripción</th>
+                            <td>{{pdt.descripcion}}</td>
+                        </tr>
+                        <tr>
+                            <th>Comisión</th>
+                            <td>${{pdt.comision|intcomma}}</td>
+                        </tr>
+                        <tr>
+                            <th>Tipo de comisión</th>
+                            <td>{{pdt.get_tipo_comision_display}}</td>
+                        </tr>
+                        <tr>
+                            <th>Precio público</th>
+                            <td>${{pdt.get_public_price|intcomma}}</td>
+                        </tr>
+                        <tr>
+                            <th>Imagen</th>
+                            <td>
+                                <div uk-lightbox>
+                                    <a href="{{pdt.imagen.url}}" class="grey-text"><i
+                                            class="material-icons">wallpaper</i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
     </div>
 </div>
 {% endblock %}

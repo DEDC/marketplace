@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.views import View
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 # app mkt
 from apps.mkt.models import Productos, Ventas, Envios
@@ -25,6 +25,17 @@ class CreateProduct(SuccessMessageMixin, CreateView):
     def form_invalid(self, form):
         messages.error(self.request, 'Formulario inválido. Por favor corrija los errores marcados en rojo.')
         return super().form_invalid(form)
+    
+class UpdateProduct(SuccessMessageMixin, UpdateView):
+    model = Productos
+    fields = ['nombre', 'precio', 'cantidad', 'descripcion', 'imagen', 'comision', 'tipo_comision']
+    query_pk_and_slug = True
+    success_url = reverse_lazy('admin:list_products')
+    template_name = 'admin/productos/editar.html'
+    success_message = 'Producto actualizado exitosamente'
+
+    # def get_success_url(self):
+    #     return reverse_lazy('admin:update_product', kwargs={'pk': self.object.pk, 'slug': self.object.slug})
 
 class ListProducts(ListView):
     model = Productos

@@ -38,7 +38,7 @@ html {
 }
 
 .card-panel {
-    webkit-box-shadow: 0 0 20px rgb(0 0 0 / 8%) !important;
+    /* webkit-box-shadow: 0 0 20px rgb(0 0 0 / 8%) !important; */
     box-shadow: 0 0 20px rgb(0 0 0 / 8%) !important;
 }
 
@@ -55,4 +55,25 @@ form .row {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.collapsible {
+    box-shadow: none !important;
+}
+
+.collapsible-header {
+    position: relative;
+}
+
+.collapsible-secondary {
+    position: absolute;
+    right: 0;
+}
+
+.dropdown-content li>a>i {
+    margin: 0 10px 0 0 !important;
+}
+
+.dropdown-content {
+    min-width: 125px !important;
 }

@@ -18,7 +18,7 @@
         <table class="striped responsive-table">
             <thead>
                 <tr>
-                    <th>UUID</th>
+                    <th>Folio</th>
                     <th>Fecha</th>
                     <th>Venta</th>
                     <th>Estatus</th>
@@ -27,7 +27,7 @@
             <tbody>
                 {% for env in object_list %}
                 <tr>
-                    <td>{{env.uuid}}</td>
+                    <td>{{env.folio}}</td>
                     <td>{{env.fecha_reg}}</td>
                     <td>{{env.venta.uuid}}</td>
                     <td>{{env.get_estatus_display}}</td>

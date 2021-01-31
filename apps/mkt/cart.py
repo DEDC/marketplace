@@ -14,7 +14,7 @@ class Cart:
                 'pdt_quantity': quantity,
                 'pdt_uuid': str(item.uuid),
                 'pdt_slug': str(item.slug),
-                'pdt_price': str(item.precio * int(quantity)),
+                'pdt_price': str(item.get_public_price() * int(quantity)),
                 'pdt_image': item.imagen.url
             }
             messages.success(self.request, 'Se ha agregado un producto al carrito')
@@ -23,7 +23,7 @@ class Cart:
                 if key == str(item.uuid):
                     if (int(value['pdt_quantity']) + int(quantity)) <= item.cantidad:
                         value['pdt_quantity'] = int(value['pdt_quantity']) + int(quantity)
-                        value['pdt_price'] = str(item.precio * int(value['pdt_quantity']))
+                        value['pdt_price'] = str(item.get_public_price() * int(value['pdt_quantity']))
                         messages.success(self.request, 'Se ha agregado una unidad más al producto en el carrito')
                     else:
                         messages.warning(self.request, 'No hay más productos disponibles')
@@ -41,7 +41,7 @@ class Cart:
         for key, value in self.cart.items():
             if key == str(item.uuid):
                 value['pdt_quantity'] = value['pdt_quantity'] -1
-                value['pdt_price'] = str(item.precio * int(value['pdt_quantity']))
+                value['pdt_price'] = str(item.get_public_price() * int(value['pdt_quantity']))
                 if value['pdt_quantity'] < 1:
                     self.remove(item)
                 else:

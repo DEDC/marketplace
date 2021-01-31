@@ -99,7 +99,7 @@ def vPagarCarrito(request):
         total = 0
         for p in productos:
             item = cart.get(str(p.uuid))
-            total = total + (int(item['pdt_quantity']) * p.precio)
+            total = total + (int(item['pdt_quantity']) * p.get_public_price())
             item.update({'stock': str(p.cantidad)})
     except KeyError:
         cart = []
@@ -115,7 +115,7 @@ def vPagarCarrito(request):
             for p in productos:
                 try:
                     item = cart.get(str(p.uuid))
-                    venta.productos.add(p, through_defaults = {'precio': p.precio, 'cantidad': int(item['pdt_quantity'])})
+                    venta.productos.add(p, through_defaults = {'precio': p.get_public_price(), 'cantidad': int(item['pdt_quantity'])})
                 except KeyError:
                     continue
             # crear el envio
