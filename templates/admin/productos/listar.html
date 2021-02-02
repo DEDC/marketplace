@@ -73,7 +73,40 @@
                         </div>
                         <div class="col l4 m4 s12">
                             <h6><b>Precio público</b></h6>
-                            <span>${{pdt.get_public_price|intcomma}}</span>
+                            {% with final_price=pdt.get_public_price %}
+                            <span>${{final_price|intcomma}}</span>
+                            <div uk-dropdown="mode: click; pos: top-center">
+                                <p>
+                                    <b>Precio:</b>
+                                    <span>${{pdt.precio|intcomma}}</span>
+                                </p>
+                                <p>
+                                    <b>Comisión:</b>
+                                    <span>${{pdt.comision|intcomma}}</span>
+                                </p>
+                                <p>
+                                    <b>Precio + Comisión:</b>
+                                    <span>${{pdt.price_add_comi|intcomma}}</span>
+                                </p>
+                                <p>
+                                    <b>IVA:</b>
+                                    <span>${{pdt.price_with_iva|intcomma}}</span>
+                                </p>
+                                <p>
+                                    <b>Precio + Comisión + IVA:</b>
+                                    <span>${{pdt.price_add_iva|intcomma}}</span>
+                                </p>
+
+                                <p>
+                                    <b>Comisión de Stripe:</b>
+                                    <span>${{pdt.price_whit_stripe|intcomma}}</span>
+                                </p>
+                                <p>
+                                    <b>Precio + Comisión + IVA + Stripe:</b>
+                                    <span>${{final_price|intcomma}}</span>
+                                </p>
+                            </div>
+                            {% endwith %}
                         </div>
                         <div class="col l4 m4 s12">
                             <h6><b>Imagen</b></h6>

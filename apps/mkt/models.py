@@ -2,12 +2,18 @@
 from django.db import models
 from django.utils.text import slugify
 from django.core.validators import MaxValueValidator, MinValueValidator
+from decimal import Decimal
 # utils
 from utils.models.control import ControlInfo, path_image
 
 
 class Productos(ControlInfo):
     identifier = 'CT'
+    price_add_comi = 0
+    price_with_iva = 0
+    price_add_iva = 0
+    price_whit_stripe = 0
+
     nombre = models.CharField('Nombre del producto', max_length = 50)
     slug = models.SlugField(editable = False, blank = True)
     precio = models.DecimalField('Precio unitario', max_digits = 10, decimal_places = 2, validators = [MinValueValidator(1.00), MaxValueValidator(10000000.00)])
@@ -20,10 +26,31 @@ class Productos(ControlInfo):
     def get_public_price(self):
         price = 0
         if self.tipo_comision == 'directa':
-            price = self.precio + self.comision
+            price = round(self.precio + self.comision, 2)
         else:
-            price = self.precio +  round((self.precio * self.comision) / 100)
-        return price
+            price = round(self.precio + ((self.precio * self.comision) / 100), 2)
+        
+        self.price_add_comi = price
+        price_iva = self.get_iva(price)
+        self.price_with_iva = price_iva
+        price = price + price_iva
+        self.price_add_iva = price
+        price_stripe = self.get_stripe_price_with_iva(price)
+        self.price_whit_stripe = price_stripe
+        price =  price + price_stripe
+        return round(price, 2)
+
+    def get_iva(self, num):
+        iva = 16
+        num = (num * iva) / 100
+        return round(num, 2)
+    
+    def get_stripe_price_with_iva(self, num):
+        stripe_trans = Decimal(3.6)
+        stripe_cost = 3
+        stripe_total = (((num * stripe_trans) / 100) + 3)
+        num = self.get_iva(stripe_total) + stripe_total
+        return round(num, 2)
     
     def save(self, *args, **kwargs):
         self.slug = slugify(self.nombre)
