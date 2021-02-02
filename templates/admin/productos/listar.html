@@ -23,9 +23,9 @@
                     <b class="grey-text text-darken-2">{{pdt.folio}}</b>&nbsp;&nbsp;
                     <b class="grey-text">{{pdt.nombre}}</b>
                     <div class="collapsible-secondary not-collapse">
-                        <a class='dropdown-trigger' href='#' data-target='dropdown1'><i
+                        <a class='dropdown-trigger' href='#' data-target='dropdown{{pdt.pk}}'><i
                                 class="material-icons grey-text text-darken-2">more_vert</i></a>
-                        <ul id='dropdown1' class='dropdown-content'>
+                        <ul id='dropdown{{pdt.pk}}' class='dropdown-content'>
                             <li><a href="{% url 'admin:update_product' pdt.pk pdt.slug %}"
                                     class="grey-text text-darken-2"><i class="material-icons">edit</i>Editar</a></li>
                             <li><a href="#!" class="grey-text text-darken-2"><i
@@ -34,50 +34,57 @@
                     </div>
                 </div>
                 <div class="collapsible-body">
-                    <table class="striped responsive-table">
-                        <tr>
-                            <th>Folio</th>
-                            <td><a target="__blank" href="{% url 'mkt:producto' pdt.slug pdt.uuid %}">{{pdt.folio}}</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Nombre</th>
-                            <td>{{pdt.nombre}}</td>
-                        </tr>
-                        <tr>
-                            <th>Precio</th>
-                            <td>${{pdt.precio|intcomma}}</td>
-                        </tr>
-                        <tr>
-                            <th>Cantidad</th>
-                            <td>{{pdt.cantidad}}</td>
-                        </tr>
-                        <tr>
-                            <th>Descripción</th>
-                            <td>{{pdt.descripcion}}</td>
-                        </tr>
-                        <tr>
-                            <th>Comisión</th>
-                            <td>${{pdt.comision|intcomma}}</td>
-                        </tr>
-                        <tr>
-                            <th>Tipo de comisión</th>
-                            <td>{{pdt.get_tipo_comision_display}}</td>
-                        </tr>
-                        <tr>
-                            <th>Precio público</th>
-                            <td>${{pdt.get_public_price|intcomma}}</td>
-                        </tr>
-                        <tr>
-                            <th>Imagen</th>
-                            <td>
+                    <div class="row">
+                        <div class="col l4 m4 s12">
+                            <h6><b>Folio</b></h6>
+                            <span><a target="__blank"
+                                    href="{% url 'mkt:producto' pdt.slug pdt.uuid %}">{{pdt.folio}}</a></span>
+                        </div>
+                        <div class="col l4 m4 s12">
+                            <h6><b>Nombre</b></h6>
+                            <span>{{pdt.nombre}}</span>
+                        </div>
+                        <div class="col l4 m4 s12">
+                            <h6><b>Descripción</b></h6>
+                            <a href="#descripcion" class="grey-text"><i class="material-icons">subject</i></a>
+                            <div uk-dropdown="mode: click; pos: bottom-center">
+                                {{pdt.descripcion}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col l4 m4 s12">
+                            <h6><b>Cantidad</b></h6>
+                            <span>{{pdt.cantidad}}</span>
+                        </div>
+                        <div class="col l4 m4 s12">
+                            <h6><b>Precio</b></h6>
+                            <span>${{pdt.precio|intcomma}}</span>
+                        </div>
+                        <div class="col l4 m4 s12">
+                            <h6><b>Comisión</b></h6>
+                            <span>${{pdt.comision|intcomma}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col l4 m4 s12">
+                            <h6><b>Tipo de comisión</b></h6>
+                            <span>{{pdt.get_tipo_comision_display}}</span>
+                        </div>
+                        <div class="col l4 m4 s12">
+                            <h6><b>Precio público</b></h6>
+                            <span>${{pdt.get_public_price|intcomma}}</span>
+                        </div>
+                        <div class="col l4 m4 s12">
+                            <h6><b>Imagen</b></h6>
+                            <span>
                                 <div uk-lightbox>
                                     <a href="{{pdt.imagen.url}}" class="grey-text"><i
                                             class="material-icons">wallpaper</i></a>
                                 </div>
-                            </td>
-                        </tr>
-                    </table>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </li>
             {% endfor %}
