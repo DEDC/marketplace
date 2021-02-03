@@ -1,32 +1,49 @@
+@media only screen and (min-width: 601px) {
+    nav, nav .nav-wrapper i, nav a.sidenav-trigger, nav a.sidenav-trigger i {
+        height: 80px;
+        line-height: 80px;
+    }
+}
+
+nav {
+    color: #fff;
+    background-color: #ee6e73;
+    width: 100%;
+    height: 80px;
+    line-height: 80px;
+}
+
+nav .nav-wrapper .brand-logo img {
+    max-height: 80px !important;
+    padding: 10px 0 17px 20px !important;
+}
+
+nav .nav-wrapper a, nav .nav-wrapper span {
+    color: #575756 !important;
+}
+
+nav i, nav [class^="mdi-"], nav [class*="mdi-"], nav i.material-icons, nav .sidenav-trigger {
+    font-size: 30px !important;
+    height: 80px;
+    line-height: 80px;
+}
+
 a {
     text-decoration: none !important;
 }
 
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-header>.cart {
-    cursor: pointer;
-}
-
-header>.cart>div>i {
-    vertical-align: middle !important;
-}
-
-header>.cart>div>.badge-cart {
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-    font-size: 10px;
+nav .notification-badge {
+    font-family: Muli, sans-serif;
+    position: relative;
+    top: -25px;
+    right: 10px;
+    margin: 0 -.8em;
+    padding: 2px 5px;
     color: #fff;
-    padding: 3px 6px;
-    vertical-align: top;
-    margin-left: -10px;
-    position: absolute;
-    top: 12px;
+    border-radius: 50%;
+    background-color: #95c11f;
+    /* box-shadow: 0 0 10px 0 #00bcd4; */
+    font-size: 12px;
 }
 
 main {
@@ -94,4 +111,20 @@ button {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+nav #dropdown-profile, nav #dropdown-profile-mobile {
+    width: 200px !important;
+}
+
+nav #dropdown-cart {
+    width: 200px !important;
+}
+
+.sidenav {
+    width: 280px !important;
+}
+
+nav #dropdown-cart li.divider {
+    padding: 0;
 }

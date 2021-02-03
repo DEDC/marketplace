@@ -3,23 +3,54 @@
 {% load humanize %}
 {% load customtags %}
 {% block head %}
+{{block.super}}
 <link rel="stylesheet" href="{% static 'css/home_styles.css' %}">
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var elems = document.querySelectorAll('select');
-        var instances = M.FormSelect.init(elems);
-    });
-</script>
 {% endblock %}
 {% block body %}
 {% block header %}
-<header class="container">
-    <h4><a class="grey-text text-darken-2" href="{% url 'mkt:marketplace' %}">MarketPlace</a></h4>
-    {% block cart %}
-    {% cart request %}
-    {% endblock %}
+<header>
+    <nav class="white">
+        <div class="nav-wrapper">
+            <a href="{% url 'mkt:marketplace' %}" class="brand-logo"><img src="{% static 'images/logo.png' %}"
+                    alt="logo" class="responsive-img"></a>
+            <ul class="right">
+                {% cart request %}
+            </ul>
+            <ul class="right hide-on-med-and-down">
+                <li>
+                    <a href="#" class="waves-effect waves-block waves-light dropdown-trigger"
+                        data-target='dropdown-profile'><i class="material-icons left">face</i>¡Hola
+                        {{user.first_name}}!</a>
+                    <ul id='dropdown-profile' class='dropdown-content'>
+                        <li><a href="#!"><i class="material-icons">settings</i>Configuraciones</a></li>
+                        <li><a href="#!"><i class="material-icons">logout</i>Cerrar sesión</a></li>
+                    </ul>
+                </li>
+                <li><a href="#search"><i class="material-icons">search</i></a></li>
+            </ul>
+            <ul class="left hide-on-med-and-up show-on-medium-and-down">
+                <li><a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 </header>
-<div class="divider"></div>
+{% endblock %}
+{% block sidenav %}
+<aside>
+    <ul id="slide-out" class="sidenav">
+        <li><a href="#search"><i class="material-icons">search</i>Buscar</a></li>
+        <li>
+            <a href="#" class="waves-effect waves-block waves-light dropdown-trigger"
+                data-target='dropdown-profile-mobile'><i class="material-icons left">face</i>¡Hola
+                {{user.first_name}}!</a>
+            <ul id='dropdown-profile-mobile' class='dropdown-content'>
+                <li><a href="#!"><i class="material-icons">settings</i>Configuraciones</a></li>
+                <li><a href="#!"><i class="material-icons">logout</i>Cerrar sesión</a></li>
+            </ul>
+        </li>
+    </ul>
+</aside>
 {% endblock %}
 <main>
     {% block auth_message %}

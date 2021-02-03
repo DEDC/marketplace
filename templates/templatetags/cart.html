@@ -1,57 +1,41 @@
 {% load humanize %}
-<div class="cart">
-    <div uk-toggle="target: #cart-menu">
-        <i class="small material-icons">shopping_cart</i>
-        {% if cart|length > 0 %}<span class='badge-cart orange lighten-1'>{{cart|length}}</span>{% endif %}
-    </div>
-    <div id="cart-menu" uk-offcanvas="overlay: true; flip: true">
-        <div class="uk-offcanvas-bar" style="background-color: white !important;cursor: auto; color: black !important;">
-            <a style="color:  black !important;" class="uk-offcanvas-close" type="button" uk-close></a>
-            <h5 style="color:  black !important;">Carrito de compras</h5>
-            <br>
-            <a href="{% url 'mkt:pagarCarrito' %}" class="btn-large btn-width orange lighten-1" type="submit">Continuar
+<li>
+    <a href="#cart" class="waves-effect waves-block waves-light dropdown-trigger" data-target='dropdown-cart'><i
+            class="material-icons">shopping_cart {% if cart|length > 0 %}<small
+                class="notification-badge">{{cart|length}}</small>{% endif %}</i></a>
+    <ul id='dropdown-cart' class='dropdown-content'>
+        {% if cart|length > 0 %}
+        <li>
+            <a href="{% url 'mkt:pagarCarrito' %}" class="center-align" type="submit">Continuar
                 pago</a>
-            <br>
-            <div class="card-panel">
-                <ul class="collection">
-                    {% for item, value in cart.items %}
-                    <li class="collection-item avatar">
-                        <a href="{% url 'mkt:producto' value.pdt_slug value.pdt_uuid %}">
-                            <img src="{{value.pdt_image}}" alt="" class="circle">
-                            <p>
-                                <span class="pdt-name black-text">{{value.pdt_name}}</span>
-                                <br>
-                                <span class="black-text">$ {{value.pdt_price|intcomma}} mxn</span>
-                                <br>
-                                <span class="grey-text">{{value.pdt_quantity}} unidad(es)</span>
-                            </p>
-                        </a>
-                        <form action="{% url 'mkt:actCarrito' %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="pdt-id" value="{{value.pdt_uuid}}">
-                            <input type="hidden" name="url-origin" value="{{request.build_absolute_uri}}">
-                            <div>
-                                <div class="uk-button-group">
-                                    <button name="increment" class="btn-small btn-flat white"><i
-                                            class="tiny material-icons">add</i></button>
-                                    <button name="decrement" class="btn-small btn-flat white"><i
-                                            class="tiny material-icons">remove</i></button>
-                                    <button name="remove" class="btn-small btn-flat white"><i
-                                            class="tiny material-icons">close</i></button>
-                                </div>
-                            </div>
-                        </form>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="row center-align">
+        </li>
+        {% endif %}
+        <li class="divider"></li>
+        {% for item, value in cart.items %}
+        <li>
+            <a href="{% url 'mkt:producto' value.pdt_slug value.pdt_uuid %}" class="center-align">
+                <img src="{{value.pdt_image}}" alt="">
+                <p>
+                    <span class="pdt-name black-text">{{value.pdt_name}}</span>
+                    <br>
+                    <span class="black-text">$ {{value.pdt_price|intcomma}} mxn</span>
+                    <br>
+                    <span class="grey-text">{{value.pdt_quantity}} unidad(es)</span>
+                </p>
+            </a>
+        </li>
+        <li class="divider"></li>
+        {% endfor %}
+        {% if cart|length > 0 %}
+        <li>
+            <span>
                 <form action="{% url 'mkt:limpCarrito' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="url-origin" value="{{request.build_absolute_uri}}">
                     <button name="clear" class="btn-flat grey-text">vaciar carrito</button>
                 </form>
-            </div>
-        </div>
-    </div>
-</div>
+            </span>
+        </li>
+        {% endif %}
+    </ul>
+</li>
