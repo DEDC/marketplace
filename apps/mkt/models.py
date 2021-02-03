@@ -9,6 +9,7 @@ from utils.models.control import ControlInfo, path_image
 
 class Productos(ControlInfo):
     identifier = 'CT'
+    price_comi = 0
     price_add_comi = 0
     price_with_iva = 0
     price_add_iva = 0
@@ -26,10 +27,13 @@ class Productos(ControlInfo):
     def get_public_price(self):
         price = 0
         if self.tipo_comision == 'directa':
-            price = round(self.precio + self.comision, 2)
+            self.price_comi = self.comision
+            price = self.precio + self.comision
         else:
-            price = round(self.precio + ((self.precio * self.comision) / 100), 2)
-        
+            comi_percent = self.get_percent(self.precio, self.comision)
+            self.price_comi = comi_percent
+            price = self.precio + comi_percent
+
         self.price_add_comi = price
         price_iva = self.get_iva(price)
         self.price_with_iva = price_iva
@@ -40,17 +44,16 @@ class Productos(ControlInfo):
         price =  price + price_stripe
         return round(price, 2)
 
+    def get_percent(self, num, percent):
+        return round((num * percent) / 100, 2)
+
     def get_iva(self, num):
-        iva = 16
-        num = (num * iva) / 100
-        return round(num, 2)
+        return round(self.get_percent(num, 16), 2)
     
     def get_stripe_price_with_iva(self, num):
         stripe_trans = Decimal(3.6)
-        stripe_cost = 3
-        stripe_total = (((num * stripe_trans) / 100) + 3)
-        num = self.get_iva(stripe_total) + stripe_total
-        return round(num, 2)
+        stripe_total = self.get_percent(num, stripe_trans) + 3
+        return round(self.get_iva(stripe_total) + stripe_total, 2)
     
     def save(self, *args, **kwargs):
         self.slug = slugify(self.nombre)

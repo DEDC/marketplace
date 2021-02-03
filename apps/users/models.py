@@ -16,7 +16,8 @@ class Usuarios(AbstractUser):
 class Direcciones(ControlInfo):
     uuid = None
     calle = models.CharField('Nombre de la calle', max_length = 100)
-    no_calle = models.CharField('Número de la calle', max_length = 6)
+    no_calle = models.CharField('Número exterior', max_length = 6, default = 's/n')
+    no_interior = models.CharField('Número interior', max_length = 6, default = 's/n')
     colonia = models.CharField('Nombre de la colonia', max_length = 100)
     referencias = models.CharField('Referencias para ubicar el lugar', max_length = 200)
     instrucciones = models.CharField('Instrucciones de entrega', max_length = 200)
