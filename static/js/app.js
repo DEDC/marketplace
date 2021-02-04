@@ -7,6 +7,8 @@ var select_instances = M.FormSelect.init(select);
 var dropdown = document.querySelectorAll('.dropdown-trigger');
 var drp_instances = M.Dropdown.init(dropdown, { 'coverTrigger': false });
 var not_collapse = document.querySelectorAll('.not-collapse')
+var modal = document.querySelectorAll('.modal');
+var instances_modal = M.Modal.init(modal);
 not_collapse.forEach(e => {
     e.addEventListener('click', function (ev) {
         ev.stopPropagation();

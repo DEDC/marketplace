@@ -1,0 +1,51 @@
+<div id="register-modal" class="modal">
+    <div class="modal-content">
+        <div class="row">
+            <div class="col l8 offset-l2">
+                <h5>Crear cuenta</h5>
+                <form action="{% url 'user:rUsuario' %}?redirect_to={{request.get_full_path}}" method="post">
+                    {% csrf_token %}
+                    <div class="input-field">
+                        {{form_user.first_name.label_tag}}
+                        {{form_user.first_name}}
+                        <span class="help-text red-text">{{form_user.first_name.errors}}</span>
+                    </div>
+                    <div class="input-field">
+                        {{form_user.last_name.label_tag}}
+                        {{form_user.last_name}}
+                        <span class="help-text red-text">{{form_user.last_name.errors}}</span>
+                    </div>
+                    <div class="input-field">
+                        {{form_user.email.label_tag}}
+                        {{form_user.email}}
+                        <span class="help-text red-text">{{form_user.email.errors}}</span>
+                    </div>
+                    <div class="input-field">
+                        {{form_user.phone_number.label_tag}}
+                        {{form_user.phone_number}}
+                        <span class="help-text red-text">{{form_user.phone_number.errors}}</span>
+                    </div>
+                    <div class="input-field">
+                        {{form_user.password.label_tag}}
+                        {{form_user.password}}
+                        <span class="help-text red-text">{{form_user.password.errors}}</span>
+                    </div>
+                    <div class="input-field">
+                        {{form_user.repeat_password.label_tag}}
+                        {{form_user.repeat_password}}
+                        <span class="help-text red-text">{{form_user.repeat_password.errors}}</span>
+                    </div>
+                    <p>
+                        <label>
+                            {{form_user.privcheck}}
+                            <span class="black-text">He leído y acepto los <a href="#" target="_blank">Términos y
+                                    Condiciones</a></span>
+                        </label>
+                        <span class="help-text red-text">{{form_user.privcheck.errors}}</span>
+                    </p>
+                    <button class="btn-large btn-width bk-green">Registrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

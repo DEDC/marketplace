@@ -1,4 +1,6 @@
+# django
 from django.urls import path
+# app users
 from .views import vLogin, vLogout, vRegistro, vDirecciones
 
 app_name = 'user'

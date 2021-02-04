@@ -5,7 +5,7 @@ from .forms import fRegistroUsuarios, fLogin, fRegistroDirecciones
 
 def vRegistro(request):
     if request.method == 'POST':
-        redirect_url = request.GET.get('redirect_url', None)
+        redirect_url = request.GET.get('redirect_to', None)
         fusuario = fRegistroUsuarios(request.POST, label_suffix = '')
         if fusuario.is_valid():
             usuario = fusuario.save(commit = False)
@@ -18,7 +18,6 @@ def vRegistro(request):
             return redirect(redirect_url) if redirect_url is not None else redirect('mkt:marketplace')
         else:
             messages.error(request, 'Formulario inválido. Por favor corrija los errores marcados en rojo')
-            print(fusuario.errors)
     else:
         fusuario = fRegistroUsuarios(label_suffix = '')
     context = {'fusuario': fusuario}
@@ -26,7 +25,7 @@ def vRegistro(request):
 
 def vLogin(request):
     if request.method == 'POST':
-        redirect_url = request.GET.get('redirect_url', None)
+        redirect_url = request.GET.get('redirect_to', None)
         flogin = fLogin(request.POST, label_suffix = '')
         if flogin.is_valid():
             username = flogin.cleaned_data['username']
@@ -34,18 +33,16 @@ def vLogin(request):
             autenticar = authenticate(username = username, password = password)
             if autenticar is not None:
                 login(request, autenticar)
-                return redirect(redirect_url) if redirect_url is not None else redirect('mkt:marketplace')
+                messages.success(request, 'Bienvenido!, haz iniciado sesión.')
             else:
                 messages.error(request, 'Usuario y/o contraseña no válidos')
         else:
             messages.error(request, 'Formulario inválido. Por favor corrija los errores marcados en rojo')
-    else:
-        flogin = fLogin()
-    context = {'flogin': flogin}
-    return render(request, 'users/login.html', context)
+        return redirect(redirect_url, kwargs = {'form_login2': 'holaaa'}) if redirect_url is not None else redirect('mkt:marketplace')
 
 def vLogout(request):
     logout(request)
+    messages.warning(request, 'Haz cerrado sesión')
     return redirect('mkt:marketplace')
 
 def vDirecciones(request):

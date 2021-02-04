@@ -168,3 +168,7 @@ nav #dropdown-cart li a {
 .cl-blue {
     color: #009fe3 !important;
 }
+
+.container-lg {
+    width: 90% !important;
+}

@@ -25,11 +25,14 @@
                     </a>
                     <ul id='dropdown-profile' class='dropdown-content'>
                         {% if request.user.is_authenticated %}
-                        <li><a href="#!"><i class="material-icons">settings</i>Configuraciones</a></li>
+                        <li><a href="#"><i class="material-icons">settings</i>Configuraciones</a></li>
                         <li><a href="{% url 'user:logout' %}"><i class="material-icons">logout</i>Cerrar sesión</a></li>
                         {% else %}
-                        <li><a href="{% url 'user:login' %}"><i class="material-icons">login</i>Iniciar sesión</a></li>
-                        <li><a href="#!"><i class="material-icons">person_add_alt</i>Crear mi cuenta</a></li>
+                        <li><a href="#login-modal" class="waves-effect waves-light modal-trigger"><i
+                                    class="material-icons">login</i>Iniciar sesión</a></li>
+                        <li><a href="#register-modal" class="waves-effect waves-light modal-trigger"><i
+                                    class="material-icons">person_add_alt</i>Crear mi
+                                cuenta</a></li>
                         {% endif %}
                     </ul>
                 </li>
@@ -60,6 +63,8 @@
 </aside>
 {% endblock %}
 <main>
+    {% include 'users/login_modal.html' %}
+    {% include 'users/registro_modal.html' %}
     {% block validations %}
     <div class="container">
         {% include 'base/validaciones.html' %}

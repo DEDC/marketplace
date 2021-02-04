@@ -1,0 +1,30 @@
+<div id="login-modal" class="modal">
+    <div class="modal-content">
+        <div class="row">
+            <div class="col l8 offset-l2">
+                <h5>Iniciar sesión</h5>
+                {{form_login2}}
+                {% include 'base/validaciones.html' %}
+                <form action="{% url 'user:login' %}?redirect_to={{request.get_full_path}}" method="post">
+                    {% csrf_token %}
+                    <div class="input-field">
+                        {{form_login.username.label_tag}}
+                        {{form_login.username}}
+                        <span class="help-text red-text">{{form_login.username.errors}}</span>
+                    </div>
+                    <div class="input-field">
+                        {{form_login2.username.label_tag}}
+                        {{form_login2.username}}
+                        <span class="help-text red-text">{{form_login2.username.errors}}</span>
+                    </div>
+                    <div class="input-field">
+                        {{form_login.password.label_tag}}
+                        {{form_login.password}}
+                        <span class="help-text red-text">{{form_login.password.errors}}</span>
+                    </div>
+                    <button class="btn-large btn-width bk-green">Ingresar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
