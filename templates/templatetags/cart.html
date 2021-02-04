@@ -5,9 +5,9 @@
                 class="notification-badge">{{cart|length}}</small>{% endif %}</i></a>
     <ul id='dropdown-cart' class='dropdown-content'>
         {% if cart|length > 0 %}
-        <li>
-            <a href="{% url 'mkt:pagarCarrito' %}" class="center-align" type="submit">Continuar
-                pago</a>
+        <li class="bk-green">
+            <a href="{% url 'mkt:pagarCarrito' %}" class="center-align" style="color: white !important;"
+                type="submit">CONTINUAR COMPRA</a>
         </li>
         {% endif %}
         <li class="divider"></li>
@@ -15,13 +15,12 @@
         <li>
             <a href="{% url 'mkt:producto' value.pdt_slug value.pdt_uuid %}" class="center-align">
                 <img src="{{value.pdt_image}}" alt="">
-                <p>
-                    <span class="pdt-name black-text">{{value.pdt_name}}</span>
-                    <br>
-                    <span class="black-text">$ {{value.pdt_price|intcomma}} mxn</span>
-                    <br>
-                    <span class="grey-text">{{value.pdt_quantity}} unidad(es)</span>
-                </p>
+                <br>
+                <span class="pdt-name black-text">{{value.pdt_name}}</span>
+                <br>
+                <span class="black-text">${{value.pdt_price|intcomma}} mxn</span>
+                <br>
+                <small class="grey-text">{{value.pdt_quantity}} unidad(es)</small>
             </a>
         </li>
         <li class="divider"></li>

@@ -1,3 +1,12 @@
+@font-face {
+    font-family: 'Gilroy';
+    src: url('/static/fonts/Gilroy-Light.otf');
+}
+
+html, body, .btn, .btn-large, h4, h5, h6, select {
+    font-family: 'Gilroy' !important;
+}
+
 @media only screen and (min-width: 601px) {
     nav, nav .nav-wrapper i, nav a.sidenav-trigger, nav a.sidenav-trigger i {
         height: 80px;
@@ -41,7 +50,7 @@ nav .notification-badge {
     padding: 2px 5px;
     color: #fff;
     border-radius: 50%;
-    background-color: #95c11f;
+    background-color: #2caaa9;
     /* box-shadow: 0 0 10px 0 #00bcd4; */
     font-size: 12px;
 }
@@ -114,7 +123,7 @@ button {
 }
 
 nav #dropdown-profile, nav #dropdown-profile-mobile {
-    width: 200px !important;
+    width: 230px !important;
 }
 
 nav #dropdown-cart {
@@ -127,4 +136,35 @@ nav #dropdown-cart {
 
 nav #dropdown-cart li.divider {
     padding: 0;
+}
+
+nav #dropdown-cart a img {
+    width: 50%;
+}
+
+nav #dropdown-cart li a {
+    padding: 15px !important;
+}
+
+nav #dropdown-cart li a {
+    padding: 15px !important;
+}
+
+.bk-green {
+    background-color: #2caaa9 !important;
+    color: white !important;
+}
+
+.bk-green-2 {
+    background-color: #006633 !important;
+    color: white !important;
+}
+
+.bk-blue {
+    background-color: #009fe3 !important;
+    color: white !important;
+}
+
+.cl-blue {
+    color: #009fe3 !important;
 }

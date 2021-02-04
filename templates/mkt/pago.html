@@ -139,8 +139,7 @@
                     </h6>
                 </div>
                 {% else %}
-                <a href="{% url 'user:rDirecciones' %}" class="btn orange lighten-1 right"><i
-                        class="material-icons">add</i></a>
+                <a href="{% url 'user:rDirecciones' %}" class="btn bk-green right"><i class="material-icons">add</i></a>
                 {% endif %}
                 {% for d in user.direcciones.all %}
                 <div class="row">
@@ -170,7 +169,7 @@
                         <div id="card-errors" role="alert"></div>
                     </div>
                     <br>
-                    <button class="btn orange lighten-1">Pagar</button>
+                    <button class="btn bk-green">Pagar</button>
                 </form>
             </div>
             {% csrf_token %}

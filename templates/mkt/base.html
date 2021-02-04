@@ -19,11 +19,18 @@
             <ul class="right hide-on-med-and-down">
                 <li>
                     <a href="#" class="waves-effect waves-block waves-light dropdown-trigger"
-                        data-target='dropdown-profile'><i class="material-icons left">face</i>¡Hola
-                        {{user.first_name}}!</a>
+                        data-target='dropdown-profile'><i class="material-icons left">face</i>
+                        {% if request.user.is_authenticated %} ¡Hola {{user.first_name}}! {% else %} Inicia sesión
+                        {% endif %}
+                    </a>
                     <ul id='dropdown-profile' class='dropdown-content'>
+                        {% if request.user.is_authenticated %}
                         <li><a href="#!"><i class="material-icons">settings</i>Configuraciones</a></li>
-                        <li><a href="#!"><i class="material-icons">logout</i>Cerrar sesión</a></li>
+                        <li><a href="{% url 'user:logout' %}"><i class="material-icons">logout</i>Cerrar sesión</a></li>
+                        {% else %}
+                        <li><a href="{% url 'user:login' %}"><i class="material-icons">login</i>Iniciar sesión</a></li>
+                        <li><a href="#!"><i class="material-icons">person_add_alt</i>Crear mi cuenta</a></li>
+                        {% endif %}
                     </ul>
                 </li>
                 <li><a href="#search"><i class="material-icons">search</i></a></li>
@@ -53,18 +60,6 @@
 </aside>
 {% endblock %}
 <main>
-    {% block auth_message %}
-    <div class="container">
-        {% if not request.user.is_authenticated %}
-        <div class="row">
-            <h6 class="right">Es necesario <a
-                    href="{% url 'user:login' %}?redirect_to={{request.build_absolute_uri}}">Iniciar sesión</a> o <a
-                    href="{% url 'user:rUsuario' %}?redirect_to={{request.build_absolute_uri}}">crear una cuenta</a>
-            </h6>
-        </div>
-        {% endif %}
-    </div>
-    {% endblock %}
     {% block validations %}
     <div class="container">
         {% include 'base/validaciones.html' %}

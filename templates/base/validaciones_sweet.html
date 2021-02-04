@@ -1,0 +1,62 @@
+{% load staticfiles %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        function toastError(msj = "Desconocido") {
+            swal({
+                toast: true,
+                type: 'error',
+                title: '<h6>' + msj + '</h6>',
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 5000
+            });
+        }
+        function toastSuccess(msj = "Desconocido") {
+            swal({
+                toast: true,
+                type: 'success',
+                title: msj,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 5000
+            });
+        }
+        function toastWarning(msj = "Desconocido") {
+            swal({
+                toast: true,
+                type: 'warning',
+                title: msj,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 5000
+            });
+        }
+        function toastNormal(msj = "Desconocido") {
+            swal({
+                toast: true,
+                type: 'info',
+                html: msj,
+                position: 'top-end',
+                showConfirmButton: true,
+                // timer: 5000
+            });
+        }
+    })
+
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'error' %}
+    <script> toastError("{{ message| safe}}"); </script>
+{% endif %}
+{% if message.tags == 'success' %}
+<script> toastSuccess("{{ message| safe}}") </script>
+{% endif %}
+{% if message.tags == 'warning' %}
+<script> toastWarning("{{ message| safe}}") </script>
+{% endif %}
+{% if message.tags == 'info' %}
+<script> toastNormal("{{ message| safe}}") </script>
+{% endif %}
+{% endfor %}
+{% endif %}
+</script>
