@@ -17,6 +17,7 @@
             <div class="col l5">
                 <h5 class="pdt-name grey-text text-darken-2">{{producto.nombre}}</h5>
                 <h4 class="pdt-price grey-text text-darken-3">$ {{producto.get_public_price|intcomma}}</h4>
+                {% if producto.cantidad > 0 %}
                 <form method="post">
                     {% csrf_token %}
                     <select class="browser-default pdt-quantity" name="pdt-quantity">
@@ -38,6 +39,11 @@
                         style="margin-top: 10px;">Agregar al carrito
                     </button>
                 </form>
+                {% else %}
+                <p class="center-align red-text">Producto agotado</p>
+                <button class="btn-large disabled">Comprar ahora</button>
+                <button class="btn disabled" style="margin-top: 10px;">Agregar al carrito</button>
+                {% endif %}
             </div>
         </div>
     </div>

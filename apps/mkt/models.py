@@ -3,9 +3,10 @@ from django.db import models
 from django.utils.text import slugify
 from django.core.validators import MaxValueValidator, MinValueValidator
 from decimal import Decimal
+# apps users
+from apps.users.models import Usuarios
 # utils
 from utils.models.control import ControlInfo, path_image
-
 
 class Productos(ControlInfo):
     identifier = 'CT'
@@ -65,15 +66,18 @@ class Imagenes(ControlInfo):
     producto = models.ForeignKey(Productos, related_name = 'imagenes', on_delete = models.CASCADE)
 
 class Ventas(ControlInfo):
+    class Meta:
+        ordering = ['-fecha_reg']
     identifier = 'CT-VT'
     total = models.DecimalField(max_digits = 10, decimal_places = 2, validators = [MinValueValidator(1.00), MaxValueValidator(10000000.00)])
     productos = models.ManyToManyField(Productos, through = 'Productos_Ventas')
+    usuario = models.ForeignKey(Usuarios, on_delete = models.CASCADE, related_name = 'ventas', editable = False, null = True)
 
 class Productos_Ventas(ControlInfo):
     uuid = None
     folio = None
     producto = models.ForeignKey(Productos, on_delete = models.CASCADE)
-    venta = models.ForeignKey(Ventas, on_delete = models.CASCADE)
+    venta = models.ForeignKey(Ventas, on_delete = models.CASCADE, related_name = 'pdt_ventas')
     precio = models.DecimalField(max_digits = 10, decimal_places = 2, validators = [MinValueValidator(1.00), MaxValueValidator(10000000.00)])
     cantidad = models.PositiveIntegerField(validators = [MaxValueValidator(100000)])
 

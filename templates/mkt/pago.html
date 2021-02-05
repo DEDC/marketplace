@@ -88,40 +88,44 @@
 <div class="container">
     <div class="card-panel">
         <h5 class="pdt-name">Productos seleccionados</h5>
-        {% for item, value in cart.items %}
-        <div class="divider"></div>
-        <div class="row div-flex" style="margin-top: 20px;">
-            <div class="col l3">
-                <img src="{{value.pdt_image}}" alt="" class="responsive-img">
-            </div>
-            <div class="col l9">
-                <p>
-                <h5 class="pdt-name">{{value.pdt_name}}</h5>
-                <br>
-                <h6 class="black-text">$ <b>{{value.pdt_price|intcomma}}</b> mxn</h6>
-                <br>
-                <span>{{value.pdt_quantity}} unidad(es) seleccionada(s)</span>
-                <br>
-                <span class="grey-text">{{value.stock}} disponible(s)</span>
-                </p>
-                <form action="{% url 'mkt:actCarrito' %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="pdt-id" value="{{value.pdt_uuid}}">
-                    <input type="hidden" name="url-origin" value="{{request.build_absolute_uri}}">
-                    <div>
-                        <div class="uk-button-group">
-                            <button name="increment" class="btn-small btn-flat white"><i
-                                    class="tiny material-icons">add</i></button>
-                            <button name="decrement" class="btn-small btn-flat white"><i
-                                    class="tiny material-icons">remove</i></button>
-                            <button name="remove" class="btn-small btn-flat white"><i
-                                    class="tiny material-icons">close</i></button>
-                        </div>
+        <ul class="collection">
+            {% for item, value in cart.items %}
+            <li class="collection-item">
+                <div class="pdt-list">
+                    <div class="pdt-img">
+                        <a href="{% url 'mkt:producto' value.pdt_slug value.pdt_uuid %}">
+                            <img src="{{value.pdt_image}}" alt="{{value.pdt_name}}">
+                        </a>
                     </div>
-                </form>
-            </div>
-        </div>
-        {% endfor %}
+                    <div class="pdt-detail">
+                        <a href="{% url 'mkt:producto' value.pdt_slug value.pdt_uuid %}">
+                            <h6 class="pdt-name">{{value.pdt_name}}</h6>
+                        </a>
+                        <h6 class="black-text">$<b>{{value.pdt_price|intcomma}}</b> mxn</h6>
+                        <h6>{{value.pdt_quantity}} unidad(es) seleccionada(s)</h6>
+                        <h6 class="grey-text">{{value.stock}} disponible(s)</h6>
+                    </div>
+                    <div class="pdt-opt">
+                        <form action="{% url 'mkt:actCarrito' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="pdt-id" value="{{value.pdt_uuid}}">
+                            <input type="hidden" name="url-origin" value="{{request.build_absolute_uri}}">
+                            <div>
+                                <div class="uk-button-group">
+                                    <button name="increment" class="btn-small btn-flat white"><i
+                                            class="tiny material-icons">add</i></button>
+                                    <button name="decrement" class="btn-small btn-flat white"><i
+                                            class="tiny material-icons">remove</i></button>
+                                    <button name="remove" class="btn-small btn-flat white"><i
+                                            class="tiny material-icons">close</i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
         <h4 style="text-align: right;">Total:&nbsp;&nbsp;<b>$ {{total|intcomma}} mxn</b></h4>
     </div>
     <form action="" method="post" id="payment-form">

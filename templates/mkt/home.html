@@ -2,20 +2,49 @@
 {% load humanize %}
 {% load customtags %}
 {% block main %}
-<div class="container">
+{% block search %}
+<div class="container container-lg">
+    <div class="card-panel" id="cont-search">
+        <div class="row">
+            <div class="col l7 m7 s12">
+                <div class="input-field">
+                    <i class="material-icons prefix">search</i>
+                    <input type="text" name="search" id="search" autocomplete="off">
+                    <label for="search" class="">Buscar productos</label>
+                </div>
+            </div>
+            <div class="col l3 m5 s12">
+                <div class="input-field">
+                    <select name="municipios" id="id_municipios" tabindex="-1">
+                        <option value="balancan">Todas las categorías</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col l2 m12 s12">
+                <button type="submit" id="btn-search" class="btn bk-green">Buscar</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+<div class="container container-lg">
     <div class="row" style="display: flex;
         flex-wrap: wrap; align-items: center;">
         {% for p in productos %}
-        <div class="col xl4 l3 m6 s12">
+        <div class="col xl3 l3 m6 s12">
             <div class="pdt">
                 <a href="{% url 'mkt:producto' p.slug p.uuid %}">
-                    <div class="card-panel hoverable">
+                    <div class="card-panel">
                         <div class="center-align">
                             <img class="responsive-img" src="{{p.imagen.url}}" alt="">
                         </div>
                         <h6 class="pdt-name grey-text text-darken-2">{{p.nombre}}</h6>
                         <h5 class="pdt-price grey-text text-darken-3">$ {{p.get_public_price|intcomma}}</h5>
+                        {% if p.cantidad > 0 %}
                         <span class="grey-text">{{p.cantidad}} disponibles</span>
+                        {% else %}
+                        <span class="red-text">Producto agotado</span>
+                        {% endif %}
                     </div>
                 </a>
             </div>

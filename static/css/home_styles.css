@@ -111,10 +111,10 @@ button {
     width: 100%;
 }
 
-.collection {
+/* .collection {
     margin: 0 !important;
     border: unset !important;
-}
+} */
 
 .div-flex {
     display: flex;
@@ -171,4 +171,37 @@ nav #dropdown-cart li a {
 
 .container-lg {
     width: 90% !important;
+}
+
+.card-panel {
+    /* webkit-box-shadow: 0 0 20px rgb(0 0 0 / 8%) !important; */
+    box-shadow: 0 0 20px rgb(0 0 0 / 8%) !important;
+}
+
+html {
+    background: #f1f2f7;
+}
+
+#cont-search>.row {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 0;
+}
+
+@media only screen and (max-width: 992px) {
+    #cont-search>.row {
+        display: block;
+    }
+}
+
+.pdt-list {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.pdt-list>.pdt-img {
+    padding: 20px;
+    width: 150px;
 }

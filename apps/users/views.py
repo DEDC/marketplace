@@ -1,7 +1,12 @@
+# Django
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
+from django.views.generic.list import ListView
+# app users
 from .forms import fRegistroUsuarios, fLogin, fRegistroDirecciones
+# app ventas
+from apps.mkt.models import Ventas
 
 def vRegistro(request):
     if request.method == 'POST':
@@ -59,3 +64,11 @@ def vDirecciones(request):
         fdireccion = fRegistroDirecciones(request.POST, label_suffix = '')
     context = {'fdireccion': fdireccion}
     return render(request, 'users/direccion.html', context)
+
+class ListOrders(ListView):
+    model = Ventas
+    template_name = 'users/pedidos.html'
+
+    def get_queryset(self):
+        queryset = Ventas.objects.filter(usuario = self.request.user)
+        return queryset

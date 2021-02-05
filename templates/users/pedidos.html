@@ -1,0 +1,46 @@
+{% extends 'mkt/base.html' %}
+{% load humanize %}
+{% block main %}
+<div class="container">
+    <div class="card-panel">
+        <h5 class="pdt-name grey-text text-darken-2">Mis pedidos</h5>
+        <br>
+        <ul class="collection">
+            {% for p in object_list %}
+            <li class="collection-item">
+                <h6>Pedido el <b>{{p.fecha_reg}}</b> <span
+                        class="right pdt-name">{{p.envio.first.get_estatus_display}}</span></h6>
+                <h6>Folio <b>{{p.folio}}</b>&nbsp;&nbsp;&nbsp;Total <b class="green-text">${{10000|intcomma}} mxn</b>
+                </h6>
+                {% for pdt in p.pdt_ventas.all %}
+                <div class="divider"></div>
+                <div class="pdt-list">
+                    <div class="pdt-img">
+                        <a href="{% url 'mkt:producto' pdt.producto.slug pdt.producto.uuid %}">
+                            <img src="{{pdt.producto.imagen.url}}" alt="{{pdt.producto.nombre}}">
+                        </a>
+                    </div>
+                    <div class="pdt-detail">
+                        <a href="{% url 'mkt:producto' pdt.producto.slug pdt.producto.uuid %}">
+                            <h6 class="pdt-name">{{pdt.producto.nombre}}</h6>
+                        </a>
+                        <h6 class="black-text">$<b>{{pdt.precio|intcomma}}</b> mxn</h6>
+                        <h6>{{pdt.cantidad}} unidad(es) seleccionada(s)</h6>
+                    </div>
+                    <div class="pdt-opt">
+                        <button class="btn-large btn-flat white">
+                            <i class="material-icons grey-text text-darken-2">more_vert</i>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </li>
+            {% empty %}
+            <li class="collection-item">
+                <h6 class="center grey-text">No hay nada por aquí</h6>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

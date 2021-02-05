@@ -25,6 +25,9 @@
                     </a>
                     <ul id='dropdown-profile' class='dropdown-content'>
                         {% if request.user.is_authenticated %}
+                        <li><a href="{% url 'user:list_orders' %}"><i class="material-icons">widgets</i>Mis pedidos</a>
+                        </li>
+                        <li class="divider"></li>
                         <li><a href="#"><i class="material-icons">settings</i>Configuraciones</a></li>
                         <li><a href="{% url 'user:logout' %}"><i class="material-icons">logout</i>Cerrar sesión</a></li>
                         {% else %}
@@ -36,7 +39,6 @@
                         {% endif %}
                     </ul>
                 </li>
-                <li><a href="#search"><i class="material-icons">search</i></a></li>
             </ul>
             <ul class="left hide-on-med-and-up show-on-medium-and-down">
                 <li><a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons">menu</i></a>
@@ -49,7 +51,6 @@
 {% block sidenav %}
 <aside>
     <ul id="slide-out" class="sidenav">
-        <li><a href="#search"><i class="material-icons">search</i>Buscar</a></li>
         <li>
             <a href="#" class="waves-effect waves-block waves-light dropdown-trigger"
                 data-target='dropdown-profile-mobile'><i class="material-icons left">face</i>¡Hola
@@ -66,7 +67,7 @@
     {% include 'users/login_modal.html' %}
     {% include 'users/registro_modal.html' %}
     {% block validations %}
-    <div class="container">
+    <div class="container container-lg">
         {% include 'base/validaciones.html' %}
     </div>
     {% endblock %}

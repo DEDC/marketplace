@@ -111,15 +111,21 @@ def vPagarCarrito(request):
         if charge['status'] == 'succeeded':
             messages.success(request, 'Muchas gracias. Su compra se ha completado exitosamente.')
             # crear la venta
-            venta = Ventas.objects.create(total = total)
+            venta = Ventas.objects.create(total = total, usuario = request.user)
             for p in productos:
                 try:
                     item = cart.get(str(p.uuid))
                     venta.productos.add(p, through_defaults = {'precio': p.get_public_price(), 'cantidad': int(item['pdt_quantity'])})
+                    # revisar aquí después +++++++++++++++++++
+                    p.cantidad = p.cantidad - int(item['pdt_quantity'])
+                    p.save()
                 except KeyError:
                     continue
             # crear el envio
             Envios.objects.create(venta = venta)
+            # limpiar el carrito
+            request.session["cart"] = {}
+            request.session.modified = True
         return redirect('mkt:pagarCarrito')
     fdireccion = fRegistroDirecciones(label_suffix = '')
     context = {'cart': cart, 'total': total, 'fdireccion': fdireccion}
