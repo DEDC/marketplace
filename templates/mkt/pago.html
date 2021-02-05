@@ -136,9 +136,9 @@
                 <br>
                 {% if not request.user.is_authenticated %}
                 <div class="row">
-                    <h6 class="center-align">Es necesario <a
-                            href="{% url 'user:login' %}?redirect_to={{request.build_absolute_uri}}">Iniciar sesión</a>
-                        o <a href="{% url 'user:rUsuario' %}?redirect_to={{request.build_absolute_uri}}">crear una
+                    <h6 class="center-align">Es necesario <a href="#login-modal" class="modal-trigger">Iniciar
+                            sesión</a>
+                        o <a href="#register-modal" class="modal-trigger">crear una
                             cuenta</a>
                     </h6>
                 </div>
