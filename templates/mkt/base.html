@@ -13,9 +13,11 @@
         <div class="nav-wrapper">
             <a href="{% url 'mkt:marketplace' %}" class="brand-logo"><img src="{% static 'images/logo.png' %}"
                     alt="logo" class="responsive-img"></a>
+            {% block cart %}
             <ul class="right">
                 {% cart request %}
             </ul>
+            {% endblock %}
             <ul class="right hide-on-med-and-down">
                 <li>
                     <a href="#" class="waves-effect waves-block waves-light dropdown-trigger"
@@ -64,8 +66,10 @@
 </aside>
 {% endblock %}
 <main>
+    {% if not request.user.is_authenticated %}
     {% include 'users/login_modal.html' %}
     {% include 'users/registro_modal.html' %}
+    {% endif %}
     {% block validations %}
     <div class="container container-lg">
         {% include 'base/validaciones.html' %}

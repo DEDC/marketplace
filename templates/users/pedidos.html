@@ -5,13 +5,17 @@
     <div class="card-panel">
         <h5 class="pdt-name grey-text text-darken-2">Mis pedidos</h5>
         <br>
-        <ul class="collection">
+        <ul class="collection striped">
             {% for p in object_list %}
             <li class="collection-item">
-                <h6>Pedido el <b>{{p.fecha_reg}}</b> <span
-                        class="right pdt-name">{{p.envio.first.get_estatus_display}}</span></h6>
-                <h6>Folio <b>{{p.folio}}</b>&nbsp;&nbsp;&nbsp;Total <b class="green-text">${{10000|intcomma}} mxn</b>
-                </h6>
+                <span>
+                    <span class="right pdt-name">{{p.envio.first.get_estatus_display}}</span>
+                    <span>
+                        Pedido el <b>{{ p.fecha_reg|date:"D d M Y" }}</b>
+                        &nbsp;
+                        Folio <b>{{p.folio}}</b>
+                    </span>
+                </span>
                 {% for pdt in p.pdt_ventas.all %}
                 <div class="divider"></div>
                 <div class="pdt-list">
@@ -33,6 +37,8 @@
                         </button>
                     </div>
                 </div>
+                <h6 class="right">Total: <b class="green-text">${{10000|intcomma}} mxn</b></h6>
+                <br><br>
                 {% endfor %}
             </li>
             {% empty %}

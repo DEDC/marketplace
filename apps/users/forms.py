@@ -60,5 +60,5 @@ class fRegistroDirecciones(forms.ModelForm):
         model = Direcciones
         fields = '__all__'
         widgets = {
-            'instrucciones': forms.TextInput(attrs = {'class': 'materialize-textarea'})
+            'instrucciones': forms.Textarea(attrs = {'class': 'materialize-textarea'})
         }

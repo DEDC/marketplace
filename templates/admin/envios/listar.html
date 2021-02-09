@@ -21,6 +21,7 @@
                     <th>Folio</th>
                     <th>Fecha</th>
                     <th>Venta</th>
+                    <th>Dirección</th>
                     <th>Estatus</th>
                 </tr>
             </thead>
@@ -29,7 +30,11 @@
                 <tr>
                     <td>{{env.folio}}</td>
                     <td>{{env.fecha_reg}}</td>
-                    <td>{{env.venta.uuid}}</td>
+                    <td>{{env.venta.folio}}</td>
+                    <td>
+                        <a href="#descripcion" class="grey-text"><i class="material-icons">subject</i></a>
+                        <div uk-dropdown="mode: click; pos: top-center">{{env.direccion_txt}}</div>
+                    </td>
                     <td>{{env.get_estatus_display}}</td>
                 </tr>
                 {% endfor %}

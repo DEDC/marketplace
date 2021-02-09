@@ -43,7 +43,7 @@ def vLogin(request):
                 messages.error(request, 'Usuario y/o contraseña no válidos')
         else:
             messages.error(request, 'Formulario inválido. Por favor corrija los errores marcados en rojo')
-        return redirect(redirect_url, kwargs = {'form_login2': 'holaaa'}) if redirect_url is not None else redirect('mkt:marketplace')
+        return redirect(redirect_url) if redirect_url is not None else redirect('mkt:marketplace')
 
 def vLogout(request):
     logout(request)
@@ -52,6 +52,7 @@ def vLogout(request):
 
 def vDirecciones(request):
     if request.method == 'POST':
+        redirect_url = request.GET.get('redirect_to', None)
         fdireccion = fRegistroDirecciones(request.POST, label_suffix = '')
         if fdireccion.is_valid():
             direccion = fdireccion.save(commit = False)
@@ -60,10 +61,7 @@ def vDirecciones(request):
             messages.success(request, 'Ha agregado una dirección de envío')
         else:
             messages.error(request, 'Formulario inválido. Por favor corrija los errores marcados en rojo')
-    else:
-        fdireccion = fRegistroDirecciones(request.POST, label_suffix = '')
-    context = {'fdireccion': fdireccion}
-    return render(request, 'users/direccion.html', context)
+    return redirect(redirect_url) if redirect_url is not None else redirect('mkt:marketplace')    
 
 class ListOrders(ListView):
     model = Ventas
@@ -72,3 +70,5 @@ class ListOrders(ListView):
     def get_queryset(self):
         queryset = Ventas.objects.filter(usuario = self.request.user)
         return queryset
+
+# class 

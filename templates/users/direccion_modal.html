@@ -1,0 +1,84 @@
+<div id="address-modal" class="modal">
+    <div class="modal-content">
+        <h5>Agrega una dirección de envío</h5>
+        <form method="post" action="{% url 'user:rDirecciones' %}?redirect_to={{request.get_full_path}}">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col l12 m12 s12">
+                    <div class="input-field">
+                        {{fdireccion.calle.label_tag}}
+                        {{fdireccion.calle}}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col l6 m12 s12">
+                    <div class="input-field">
+                        {{fdireccion.no_calle.label_tag}}
+                        {{fdireccion.no_calle}}
+                    </div>
+                </div>
+                <div class="col l6 m12 s12">
+                    <div class="input-field">
+                        {{fdireccion.no_interior.label_tag}}
+                        {{fdireccion.no_interior}}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col l8 m12 s12">
+                    <div class="input-field">
+                        {{fdireccion.colonia.label_tag}}
+                        {{fdireccion.colonia}}
+                    </div>
+                </div>
+                <div class="col l4 m12 s12">
+                    <div class="input-field">
+                        {{fdireccion.codigo_postal.label_tag}}
+                        {{fdireccion.codigo_postal}}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col l12 m12 s12">
+                    <div class="input-field">
+                        {{fdireccion.referencias.label_tag}}
+                        {{fdireccion.referencias}}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col l12 m12 s12">
+                    <div class="input-field">
+                        {{fdireccion.instrucciones}}
+                        {{fdireccion.instrucciones.label_tag}}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col l12 m12 s12">
+                    <div class="input-field">
+                        {{fdireccion.alias.label_tag}}
+                        {{fdireccion.alias}}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col l12 m12 s12">
+                    <p class="center-align">
+                        <label>
+                            {{fdireccion.default}}
+                            <span class="black-text">{{fdireccion.default.label}}</span>
+                        </label>
+                        <span class="help-text red-text">{{fdireccion.default.errors}}</span>
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col l12 m12 s12">
+                    <button class="btn bk-green">Agregar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

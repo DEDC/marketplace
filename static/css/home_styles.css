@@ -173,8 +173,8 @@ nav #dropdown-cart li a {
     width: 90% !important;
 }
 
-.card-panel {
-    /* webkit-box-shadow: 0 0 20px rgb(0 0 0 / 8%) !important; */
+#cont-search {
+    webkit-box-shadow: 0 0 20px rgb(0 0 0 / 8%) !important;
     box-shadow: 0 0 20px rgb(0 0 0 / 8%) !important;
 }
 
@@ -194,6 +194,13 @@ html {
     }
 }
 
+@media only screen and (max-width: 550px) {
+    .pdt-list {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
 .pdt-list {
     display: flex;
     align-items: center;
@@ -204,4 +211,12 @@ html {
 .pdt-list>.pdt-img {
     padding: 20px;
     width: 150px;
+}
+
+.collection.striped>li:nth-child(odd) {
+    background-color: rgba(242, 242, 242, 0.5);
+}
+
+form .row {
+    margin-bottom: 0 !important;
 }

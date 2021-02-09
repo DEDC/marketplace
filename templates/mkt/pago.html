@@ -88,7 +88,7 @@
 <div class="container">
     <div class="card-panel">
         <h5 class="pdt-name">Productos seleccionados</h5>
-        <ul class="collection">
+        <ul class="collection striped">
             {% for item, value in cart.items %}
             <li class="collection-item">
                 <div class="pdt-list">
@@ -143,21 +143,27 @@
                     </h6>
                 </div>
                 {% else %}
-                <a href="{% url 'user:rDirecciones' %}" class="btn bk-green right"><i class="material-icons">add</i></a>
-                {% endif %}
-                {% for d in user.direcciones.all %}
                 <div class="row">
-                    <div class="col l1"><label><input class="with-gap" name="address" type="radio"
-                                value="{{d.id}}" /><span></span></label></div>
-                    <div class="col 11"><span class="title">{{d.calle}} {{d.no_calle}} / {{d.colonia}}</span>
-                        <p>{{d.referencias}}</p>
-                        <p>{{d.instrucciones}}</p>
-                    </div>
+                    <a href="#address-modal"
+                        class="btn bk-green right waves-effect waves-block waves-light modal-trigger"><i
+                            class="material-icons">add</i></a>
                 </div>
-                {% empty %}
-                <br>
-                <h6 class="center-align grey-text">No ha registrado direcciones</h6>
-                {% endfor %}
+                <ul class="collection">
+                    {% for d in user.direcciones.all %}
+                    <li class="collection-item">
+                        <label>
+                            <input {% if d.default %}checked{% endif %} class="with-gap" name="address" type="radio"
+                                value="{{d.uuid}}" />
+                            <span>CP {{d.codigo_postal}} / {{d.alias}}</span>
+                        </label>
+                    </li>
+                    {% empty %}
+                    <li class="collection-item">
+                        <h6 class="center-align grey-text">Agrega una dirección a la cual llevaremos tu pedido</h6>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
             </div>
         </div>
         <div class="card-panel">
@@ -179,5 +185,6 @@
             {% csrf_token %}
         </div>
     </form>
+    {% include 'users/direccion_modal.html' %}
 </div>
 {% endblock %}

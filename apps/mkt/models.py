@@ -4,7 +4,7 @@ from django.utils.text import slugify
 from django.core.validators import MaxValueValidator, MinValueValidator
 from decimal import Decimal
 # apps users
-from apps.users.models import Usuarios
+from apps.users.models import Usuarios, Direcciones
 # utils
 from utils.models.control import ControlInfo, path_image
 
@@ -86,3 +86,5 @@ class Envios(ControlInfo):
     status_choices = (('preparando', 'Preparando'), ('enviado', 'Enviado'), ('entregado', 'Entregado'))
     venta = models.ForeignKey(Ventas, related_name = 'envio', on_delete = models.CASCADE)
     estatus = models.CharField(max_length = 50, choices = status_choices, default = 'preparando')
+    direccion = models.OneToOneField(Direcciones, on_delete = models.SET_NULL, related_name = 'envios', null = True, editable = False)
+    direccion_txt = models.TextField(editable = False, null = True)

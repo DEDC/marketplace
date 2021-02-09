@@ -14,11 +14,14 @@ class Usuarios(AbstractUser):
     REQUIRED_FIELDS = ['phone_number', 'first_name', 'last_name', 'username']
 
 class Direcciones(ControlInfo):
-    uuid = None
+    folio = None
+    alias = models.CharField('Alias de la dirección', max_length = 100, null = True)
     calle = models.CharField('Nombre de la calle', max_length = 100)
     no_calle = models.CharField('Número exterior', max_length = 6, default = 's/n')
     no_interior = models.CharField('Número interior', max_length = 6, default = 's/n')
     colonia = models.CharField('Nombre de la colonia', max_length = 100)
+    codigo_postal = models.CharField('Código postal', max_length = 5, null = True)
     referencias = models.CharField('Referencias para ubicar el lugar', max_length = 200)
     instrucciones = models.CharField('Instrucciones de entrega', max_length = 200)
+    default = models.BooleanField('Usar esta dirección como predeterminada', default = False)
     usuario = models.ForeignKey(Usuarios, on_delete = models.CASCADE, related_name = 'direcciones', editable = False)
