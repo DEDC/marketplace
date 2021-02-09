@@ -18,6 +18,7 @@ class ControlInfo(models.Model):
         super(ControlInfo, self).save(*args, **kwargs)
 
     class Meta:
+        ordering = ['-fecha_reg']
         abstract = True
 
 def path_image(instance, filename):
