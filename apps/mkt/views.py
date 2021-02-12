@@ -3,6 +3,8 @@ import decimal
 # Django
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.views.generic import ListView
+from django.db.models import Q
 # app mkt
 from .cart import Cart
 from .payment import PaymentStripe
@@ -20,24 +22,20 @@ def vProducto(request, slug, uuid):
     producto = get_object_or_404(Productos, uuid = uuid)
     return render(request, 'mkt/producto.html', {'producto': producto})
 
-def vRegistroProductos(request):
-    if request.method == 'POST':
-        fproducto = fRegistroProducto(request.POST, request.FILES, label_suffix = '')
-        imagenes = request.FILES.getlist('imagen')
-        if fproducto.is_valid():
-            producto = fproducto.save()
-            for imagen in imagenes:
-                img = Imagenes(imagen = imagen)
-                img.save()
-            messages.success(request, 'Producto agregado exitosamente')
-            return redirect('admin:rProductos')
-        else:
-            print(fproducto.errors)
-            messages.error(request, 'Formulario inválido')
-    else:
-        fproducto = fRegistroProducto(label_suffix = '')
-    context = {'fproducto': fproducto}
-    return render(request, 'admin/productos/registro.html', context)
+class SearchProduct(ListView):
+    template_name = 'mkt/search.html'
+
+    def get_queryset(self):
+        q = self.request.GET.get('q', '')
+        lookup = (Q(nombre__icontains = q) | Q(folio__icontains = q))
+        productos = Productos.objects.filter(lookup)
+        return productos
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['productos'] = self.get_queryset()
+        context['q'] = self.request.GET.get('q', '')
+        return context
 
 def vAgregarCarrito(request):
     if request.method == 'POST':

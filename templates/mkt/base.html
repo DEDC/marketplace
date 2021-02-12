@@ -55,11 +55,23 @@
     <ul id="slide-out" class="sidenav">
         <li>
             <a href="#" class="waves-effect waves-block waves-light dropdown-trigger"
-                data-target='dropdown-profile-mobile'><i class="material-icons left">face</i>¡Hola
-                {{user.first_name}}!</a>
+                data-target='dropdown-profile-mobile'><i class="material-icons left">face</i>
+                {% if request.user.is_authenticated %} ¡Hola {{user.first_name}}! {% else %} Inicia sesión
+                {% endif %}</a>
             <ul id='dropdown-profile-mobile' class='dropdown-content'>
-                <li><a href="#!"><i class="material-icons">settings</i>Configuraciones</a></li>
-                <li><a href="#!"><i class="material-icons">logout</i>Cerrar sesión</a></li>
+                {% if request.user.is_authenticated %}
+                <li><a href="{% url 'user:list_orders' %}"><i class="material-icons">widgets</i>Mis pedidos</a>
+                </li>
+                <li class="divider"></li>
+                <li><a href="#"><i class="material-icons">settings</i>Configuraciones</a></li>
+                <li><a href="{% url 'user:logout' %}"><i class="material-icons">logout</i>Cerrar sesión</a></li>
+                {% else %}
+                <li><a href="#login-modal" class="waves-effect waves-light modal-trigger"><i
+                            class="material-icons">login</i>Iniciar sesión</a></li>
+                <li><a href="#register-modal" class="waves-effect waves-light modal-trigger"><i
+                            class="material-icons">person_add_alt</i>Crear mi
+                        cuenta</a></li>
+                {% endif %}
             </ul>
         </li>
     </ul>

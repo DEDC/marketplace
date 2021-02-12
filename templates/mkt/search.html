@@ -2,6 +2,9 @@
 {% load humanize %}
 {% load customtags %}
 {% block main %}
+<div class="container container-lg">
+    <h6 class="grey-text">Resultados para <b class="grey-text text-darken-2">{{q}}</b></h6>
+</div>
 {% include 'templatetags/search_box.html' %}
 <div class="container container-lg">
     <div class="row" style="display: flex;
@@ -25,6 +28,14 @@
                 </a>
             </div>
         </div>
+        {% empty %}
+        <div class="container container-lg" style="margin-top: 50px;">
+            <div class="row center-align">
+                <i class="material-icons grey-text text-darken-2 large">search_off</i>
+                <h5 class="grey-text text-darken-2">No hay productos que coincidan con la búsqueda</h5>
+            </div>
+        </div>
+
         {% endfor %}
     </div>
 </div>

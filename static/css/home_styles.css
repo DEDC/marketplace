@@ -182,14 +182,14 @@ html {
     background: #f1f2f7;
 }
 
-#cont-search>.row {
+#cont-search>form>.row {
     display: flex;
     align-items: baseline;
     margin-bottom: 0;
 }
 
 @media only screen and (max-width: 992px) {
-    #cont-search>.row {
+    #cont-search>form>.row {
         display: block;
     }
 }
@@ -219,4 +219,18 @@ html {
 
 form .row {
     margin-bottom: 0 !important;
+}
+
+#cont-search>form>.row>.col input {
+    border: none !important;
+    margin-bottom: 0 !important;
+}
+
+#cont-search>form>.row>.col input:focus:not([readonly]) {
+    box-shadow: none !important;
+}
+
+#cont-search {
+    padding-bottom: 0 !important;
+    padding-top: 0 !important;
 }
