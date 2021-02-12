@@ -28,7 +28,7 @@
                         <a href="{% url 'mkt:producto' pdt.producto.slug pdt.producto.uuid %}">
                             <h6 class="pdt-name">{{pdt.producto.nombre}}</h6>
                         </a>
-                        <h6 class="black-text">$<b>{{pdt.precio|intcomma}}</b> mxn</h6>
+                        <h6 class="black-text">$<b>{{pdt.get_total_price|intcomma}}</b> mxn</h6>
                         <h6>{{pdt.cantidad}} unidad(es) seleccionada(s)</h6>
                     </div>
                     <div class="pdt-opt">
@@ -37,9 +37,9 @@
                         </button>
                     </div>
                 </div>
-                <h6 class="right">Total: <b class="green-text">${{10000|intcomma}} mxn</b></h6>
-                <br><br>
                 {% endfor %}
+                <h6 class="right">Total: <b class="green-text">${{p.total_sum|intcomma}} mxn</b></h6>
+                <br><br>
             </li>
             {% empty %}
             <li class="collection-item">

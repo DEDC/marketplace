@@ -81,6 +81,9 @@ class Productos_Ventas(ControlInfo):
     precio = models.DecimalField(max_digits = 10, decimal_places = 2, validators = [MinValueValidator(1.00), MaxValueValidator(10000000.00)])
     cantidad = models.PositiveIntegerField(validators = [MaxValueValidator(100000)])
 
+    def get_total_price(self):
+        return self.precio * self.cantidad
+
 class Envios(ControlInfo):
     identifier = 'CT-EV'
     status_choices = (('preparando', 'Preparando'), ('enviado', 'Enviado'), ('entregado', 'Entregado'))

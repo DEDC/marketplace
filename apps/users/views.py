@@ -1,4 +1,5 @@
 # Django
+from django.db.models import Sum, F, FloatField
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
@@ -68,7 +69,5 @@ class ListOrders(ListView):
     template_name = 'users/pedidos.html'
 
     def get_queryset(self):
-        queryset = Ventas.objects.filter(usuario = self.request.user)
+        queryset = (Ventas.objects.filter(usuario = self.request.user).annotate(total_sum = Sum(F('pdt_ventas__precio') * F('pdt_ventas__cantidad'), output_field = FloatField())))
         return queryset
-
-# class 
