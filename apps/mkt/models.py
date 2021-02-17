@@ -71,6 +71,7 @@ class Ventas(ControlInfo):
     identifier = 'CT-VT'
     total = models.DecimalField(max_digits = 10, decimal_places = 2, validators = [MinValueValidator(1.00), MaxValueValidator(10000000.00)])
     productos = models.ManyToManyField(Productos, through = 'Productos_Ventas')
+    id_payment = models.CharField(max_length = 50, editable = False, null = True)
     usuario = models.ForeignKey(Usuarios, on_delete = models.CASCADE, related_name = 'ventas', editable = False, null = True)
 
 class Productos_Ventas(ControlInfo):

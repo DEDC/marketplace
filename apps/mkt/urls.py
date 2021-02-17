@@ -9,9 +9,7 @@ app_name = 'mkt'
 urlpatterns = [
     path('', vHome, name = 'marketplace'),
     path('producto/<slug:slug>/<uuid:uuid>', vProducto, name = 'producto'),
-    
     path('carrito/agregar/producto', vAgregarCarrito, name = 'agCarrito'),
-
     # path('carrito/desagregar/producto', vQuitarCarrito, name = 'desagCarrito'),
     path('carrito/act/producto', vAccionesCarrito, name = 'actCarrito'),
     path('carrito/limpiar', vLimpiarCarrito, name = 'limpCarrito'),

@@ -1,0 +1,11 @@
+{% extends 'mkt/base.html' %}
+{% block main %}
+<div class="container container-lg" style="margin-top: 50px;">
+    <div class="row center-align">
+        <i class="material-icons green-text large">check_circle_outline</i>
+        <br><br>
+        <h4 class="grey-text text-darken-2">Muchas gracias. Su compra se ha completado exitosamente.</h4>
+        <a href="{% url 'mkt:marketplace' %}" class="btn-large">Seguir comprando</a>
+    </div>
+</div>
+{% endblock %}

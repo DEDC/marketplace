@@ -1,6 +1,7 @@
 {% extends 'mkt/base.html' %}
 {% block head %}
 {{block.super}}
+{% if show_payment %}
 <style>
     /**
  * The CSS shown here will not be introduced in the Quickstart guide, but shows
@@ -79,12 +80,14 @@
         }
     })
 </script>
+{% endif %}
 {% endblock %}
 {% load static %}
 {% load humanize %}
 {% block cart %}
 {% endblock %}
 {% block main %}
+{% if show_payment %}
 <div class="container">
     <div class="card-panel">
         <h5 class="pdt-name">Productos seleccionados</h5>
@@ -170,6 +173,21 @@
             <h5 class="pdt-name">Información de pago</h5>
             <div class="divider"></div>
             <div class="container" style="width: 90% !important;">
+                <br><br>
+                <ul class="collection">
+                    {% for c in cards %}
+                    <li class="collection-item">
+                        <label>
+                            <input class="with-gap" name="card" type="radio" value="{{c.id}}" />
+                            <span>{{c.brand}} <b>xxxx xxxx xxxx {{c.last4}}</b></span>
+                        </label>
+                    </li>
+                    {% empty %}
+                    <li class="collection-item">
+                        <h6 class="center-align grey-text">Agrega una dirección a la cual llevaremos tu pedido</h6>
+                    </li>
+                    {% endfor %}
+                </ul>
                 <form action="/charge" method="post" id="payment-form">
                     <div class="form-row">
                         <label for="card-element">
@@ -179,6 +197,12 @@
                         <div id="card-errors" role="alert"></div>
                     </div>
                     <br>
+                    <p>
+                        <label>
+                            <input type="checkbox" class="filled-in" checked="checked" name="save-card" />
+                            <span>Guardar este método de pago para futuras compras</span>
+                        </label>
+                    </p>
                     <button class="btn bk-green">Pagar</button>
                 </form>
             </div>
@@ -187,4 +211,13 @@
     </form>
     {% include 'users/direccion_modal.html' %}
 </div>
+{% else %}
+<div class="container container-lg" style="margin-top: 50px;">
+    <div class="row center-align">
+        <i class="material-icons grey-text text-darken-2 large">remove_shopping_cart</i>
+        <br><br>
+        <h4 class="grey-text text-darken-2">No hay productos agregados al carrito</h4>
+    </div>
+</div>
+{% endif %}
 {% endblock %}

@@ -1,13 +1,16 @@
 # Python
 import decimal
+import uuid
+
 # Django
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.views.generic import ListView
 from django.db.models import Q
+from django.views.generic.base import TemplateView
 # app mkt
 from .cart import Cart
-from .payment import PaymentStripe
+from apps.payment.stripe import PaymentStripe
 from apps.mkt.forms import fRegistroProducto, fExtra_Imagenes
 from apps.users.forms import fRegistroDirecciones
 from apps.mkt.models import Productos, Imagenes, Ventas, Envios
@@ -94,57 +97,84 @@ def vLimpiarCarrito(request):
         return redirect(url_origin)
     return redirect('mkt:marketplace')
 
+# checar que esté logueado
 def vPagarCarrito(request):
+    total = 0
     try:
         cart = request.session['cart']
         uuid_list = list(cart)
-        productos = Productos.objects.filter(uuid__in = uuid_list)
-        total = 0
-        for p in productos:
+        products = Productos.objects.filter(uuid__in = uuid_list)
+        for p in products:
             item = cart.get(str(p.uuid))
             total = total + (int(item['pdt_quantity']) * p.get_public_price())
             item.update({'stock': str(p.cantidad)})
     except KeyError:
         cart = []
+    show_payment = True if len(cart) > 0 else False
     if request.method == 'POST':
+        save_card = request.POST.get('save-card', False)
         default_message = 'No especificado'
         token = request.POST.get('stripeToken', '')
-        payment = PaymentStripe()
+        payment = PaymentStripe(request.user)
         address = request.POST.get('address', '')
+        sale = None
         try:
             address = request.user.direcciones.get(uuid = address)
-            charge = payment.make_charge(amount = int(total*100), token = token)
-            if charge['status'] == 'succeeded':
-                messages.success(request, 'Muchas gracias. Su compra se ha completado exitosamente.')
-                # crear la venta
-                venta = Ventas.objects.create(total = total, usuario = request.user)
-                for p in productos:
-                    try:
-                        item = cart.get(str(p.uuid))
-                        venta.productos.add(p, through_defaults = {'precio': p.get_public_price(), 'cantidad': int(item['pdt_quantity'])})
-                        # revisar aquí después +++++++++++++++++++
-                        p.cantidad = p.cantidad - int(item['pdt_quantity'])
-                        p.save()
-                    except KeyError:
-                        continue
-                # limpiar el carrito
-                request.session["cart"] = {}
-                request.session.modified = True
-                # crear el envio
-                Envios.objects.create(venta = venta, direccion = address, 
-                    direccion_txt = 'Calle: {}, no. int.:{}, no. ext.:{}, colonia:{}, c.p.:{}, referencias:{}, instrucciones:{}'.format(
-                        address.calle, 
-                        address.no_interior,
-                        address.no_calle,
-                        address.colonia,
-                        address.codigo_postal,
-                        address.referencias,
-                        address.instrucciones
+            # create sale
+            sale = Ventas.objects.create(total = total, usuario = request.user)
+            if isinstance(sale, Ventas):
+                # make payment
+                customer = payment.customer
+                if save_card:
+                    card = payment.add_customer_card(token)
+                    token = card['id']
+                else:
+                    customer = None
+                charge = payment.make_charge(amount = int(total*100), token = token, invoice = sale.folio, customer = customer)
+                if charge['status'] == 'succeeded':
+                    # add id charge to sale
+                    sale.id_payment = charge['id']
+                    sale.save(update_fields = ['id_payment'])
+                    # add products to sales_products
+                    for p in products:
+                        try:
+                            item = cart.get(str(p.uuid))
+                            sale.productos.add(p, through_defaults = {'precio': p.get_public_price(), 'cantidad': int(item['pdt_quantity'])})
+                            # delete quantity from product stock
+                            p.cantidad = p.cantidad - int(item['pdt_quantity'])
+                            p.save()
+                        except KeyError:
+                            continue
+                    # clean cart
+                    request.session["cart"] = {}
+                    request.session.modified = True
+                    # create shipping
+                    Envios.objects.create(venta = sale, direccion = address,
+                        direccion_txt = 'Calle: {}, no. int.:{}, no. ext.:{}, colonia:{}, c.p.:{}, referencias:{}, instrucciones:{}'.format(
+                            address.calle,
+                            address.no_interior,
+                            address.no_calle,
+                            address.colonia,
+                            address.codigo_postal,
+                            address.referencias,
+                            address.instrucciones
+                        )
                     )
-                )
+                    recent_payment = True
+                    messages.success(request, 'Muchas gracias. Su compra se ha completado exitosamente.', extra_tags = 'success_payment')
+                    return render(request, 'mkt/success_payment.html')
+                else:
+                    sale.delete()
+            else:
+                messages.error(request, 'No hemos podido realizar el pago. Inténtelo de nuevo')
         except Direcciones.DoesNotExist:
             messages.error(request, 'Por favor selecciona una dirección de envío')
+        except Exception as e:
+            print(e)
+            messages.error(request, 'No hemos podido realizar el pago. Inténtelo de nuevo')
         return redirect('mkt:pagarCarrito')
+    payment = PaymentStripe(request.user, initialize_customer = False)
+    cards = payment.get_customer_cards(request.user)
     fdireccion = fRegistroDirecciones(label_suffix = '')
-    context = {'cart': cart, 'total': total, 'fdireccion': fdireccion}
+    context = {'cart': cart, 'total': total, 'fdireccion': fdireccion, 'show_payment': show_payment, 'cards': cards}
     return render(request, 'mkt/pago.html', context)
