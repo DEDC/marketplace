@@ -4,25 +4,26 @@
 {% block main %}
 {% include 'templatetags/search_box.html' %}
 <div class="container container-lg">
-    <div class="row" style="display: flex;
-        flex-wrap: wrap; align-items: center;">
+    <div class="row pdt-row">
         {% for p in productos %}
         <div class="col xl3 l3 m6 s12">
-            <div class="pdt">
-                <a href="{% url 'mkt:producto' p.slug p.uuid %}">
-                    <div class="card-panel">
-                        <div class="center-align">
-                            <img class="responsive-img" src="{{p.imagen.url}}" alt="">
-                        </div>
+            <div class="card-panel">
+                <div class="center-align">
+                    <a href="{% url 'mkt:producto' p.slug p.uuid %}">
+                        <img class="responsive-img" src="{{p.imagen.url}}" alt="">
+                    </a>
+                </div>
+                <div class="pdt-info">
+                    <a href="{% url 'mkt:producto' p.slug p.uuid %}">
                         <h6 class="pdt-name grey-text text-darken-2">{{p.nombre}}</h6>
-                        <h5 class="pdt-price grey-text text-darken-3">$ {{p.get_public_price|intcomma}}</h5>
-                        {% if p.cantidad > 0 %}
-                        <span class="grey-text">{{p.cantidad}} disponibles</span>
-                        {% else %}
-                        <span class="red-text">Producto agotado</span>
-                        {% endif %}
-                    </div>
-                </a>
+                    </a>
+                    <h5 class="pdt-price grey-text text-darken-3">$ {{p.get_public_price|intcomma}}</h5>
+                    {% if p.cantidad > 0 %}
+                    <span class="grey-text">{{p.cantidad}} disponibles</span>
+                    {% else %}
+                    <span class="red-text">Producto agotado</span>
+                    {% endif %}
+                </div>
             </div>
         </div>
         {% endfor %}
