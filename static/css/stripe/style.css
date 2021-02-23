@@ -1,0 +1,58 @@
+.StripeElement {
+    box-sizing: border-box;
+    height: 40px;
+    padding: 10px 6px;
+    background-color: white;
+    -webkit-transition: box-shadow 150ms ease;
+    transition: box-shadow 150ms ease;
+}
+
+.StripeElement--invalid {
+    border-color: #fa755a;
+}
+
+.StripeElement--webkit-autofill {
+    background-color: #fefde5 !important;
+}
+
+.frm-stp {
+    position: relative;
+    width: 100%;
+    transition-property: opacity, transform;
+    transition-duration: 0.35s;
+    transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1)
+}
+
+.fset-stp {
+    padding: 0;
+    border-style: none;
+    background-color: #fff;
+    border-radius: 4px;
+}
+
+.stp-row {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    margin-left: 15px;
+}
+
+.stp-row input {
+    font-family: Arial, Helvetica, sans-serif;
+    border: none;
+    width: 100%;
+    padding: 11px 15px 11px 23px;
+    color: #616161;
+    background-color: transparent;
+    -webkit-animation: 1ms void-animation-out;
+}
+
+.stp-row input::placeholder {
+    color: #616161;
+    font-size: 16px;
+}
+
+.stp-row input:focus {
+    outline: none;
+}
