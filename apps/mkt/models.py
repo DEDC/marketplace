@@ -34,15 +34,14 @@ class Productos(ControlInfo):
             comi_percent = self.get_percent(self.precio, self.comision)
             self.price_comi = comi_percent
             price = self.precio + comi_percent
-
         self.price_add_comi = price
         price_iva = self.get_iva(price)
         self.price_with_iva = price_iva
         price = price + price_iva
         self.price_add_iva = price
-        price_stripe = self.get_stripe_price_with_iva(price)
-        self.price_whit_stripe = price_stripe
-        price =  price + price_stripe
+        # price_stripe = self.get_stripe_price_with_iva(price)
+        # self.price_whit_stripe = price_stripe
+        # price =  price + price_stripe
         return round(price, 2)
 
     def get_percent(self, num, percent):

@@ -16,10 +16,12 @@ html, body, .btn, .btn-large, h4, h5, h6, select {
 
 nav {
     color: #fff;
-    background-color: #ee6e73;
+    background-color: white;
     width: 100%;
     height: 80px;
     line-height: 80px;
+    box-shadow: none;
+    box-shadow: 0 0 20px rgb(0 0 0 / 8%);
 }
 
 nav .nav-wrapper .brand-logo img {
@@ -56,7 +58,7 @@ nav .notification-badge {
 }
 
 main {
-    margin-top: 5%;
+    /* margin-top: 5%; */
 }
 
 button {
@@ -169,6 +171,10 @@ nav #dropdown-cart li a {
     color: #009fe3 !important;
 }
 
+.container {
+    margin-top: 3rem !important;
+}
+
 .container-lg {
     width: 90% !important;
 }
@@ -264,4 +270,19 @@ form .row {
 
 .pdt-info {
     padding: 15px;
+}
+
+*+.uk-alert {
+    margin-top: 0 !important;
+}
+
+#payment-form .select-wrapper input.select-dropdown:focus {
+    border-bottom: 1px solid #e0e0e0 !important;
+}
+
+#payment-form .select-wrapper input.select-dropdown {
+    border: 1px solid #e0e0e0 !important;
+    padding-left: 20px !important;
+    color: #424242 !important;
+    box-sizing: border-box !important;
 }

@@ -10,7 +10,7 @@
 {% block body %}
 {% block header %}
 <header>
-    <nav class="white">
+    <nav>
         <div class="nav-wrapper">
             <a href="{% url 'mkt:marketplace' %}" class="brand-logo"><img src="{% static 'images/logo.png' %}"
                     alt="logo" class="responsive-img"></a>
@@ -84,9 +84,16 @@
     {% include 'users/registro_modal.html' %}
     {% endif %}
     {% block validations %}
-    <div class="container container-lg">
-        {% include 'base/validaciones.html' %}
+    {% include 'base/validaciones.html' %}
+    {% if request.user.is_authenticated %}
+    {% if not request.user.is_confirmed %}
+    <div class="uk-alert-warning" uk-alert>
+        <a class="uk-alert-close" uk-close></a>
+        <p>Es necesario que confirmes tu correo davide011596@gmail.com. Enviamos un enlace de activación, por favor
+            revisa tu bandeja de entrada o en correo no deseado.</p>
     </div>
+    {% endif %}
+    {% endif %}
     {% endblock %}
     {% block main %}
     {% endblock %}

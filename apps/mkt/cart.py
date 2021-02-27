@@ -35,7 +35,7 @@ class Cart:
         if uuid in self.cart:
             del self.cart[uuid]
             self.save()
-            messages.warning(self.request, 'Se ha removido el producto del carrito')
+            messages.warning(self.request, 'Se ha removido un producto del carrito')
     
     def decrement(self, item):
         for key, value in self.cart.items():

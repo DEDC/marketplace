@@ -1,5 +1,17 @@
 <html>
-    <body>
-        
-    </body>
+
+<body>
+    {% autoescape off %}
+    <p><b>Hola {{user.first_name}}!,</b></p>
+    <p>
+        Tu registro CompraTabasco.com fue creado exitosamente. Por favor da click en el enlace
+        de abajo para activar tu cuenta.
+    </p>
+    <p>
+        <b><a href="https://{{ domain }}{% url 'user:confirm_user' uidb64=uid token=token %}">Activar mi cuenta
+                ahora</a>
+    </p>
+    {% endautoescape %}
+</body>
+
 </html>

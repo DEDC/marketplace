@@ -31,6 +31,11 @@ class fRegistroUsuarios(forms.ModelForm):
                 'unique': 'Este número de teléfono ya fue registrado'
             }
         }
+    
+    def __init__(self, *args, **kwargs):
+        super(fRegistroUsuarios, self).__init__(*args, **kwargs)
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
 
     def clean_repeat_password(self):
         repeat_password = self.cleaned_data['repeat_password']

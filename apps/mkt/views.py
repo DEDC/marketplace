@@ -1,21 +1,24 @@
 # Python
 import decimal
 import uuid
-
 # Django
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.views.generic import ListView
 from django.db.models import Q
 from django.views.generic.base import TemplateView
+from django.core.exceptions import ValidationError
 # app mkt
 from .cart import Cart
-from apps.payment.stripe import PaymentStripe
-from apps.mkt.forms import fRegistroProducto, fExtra_Imagenes
-from apps.users.forms import fRegistroDirecciones
-from apps.mkt.models import Productos, Imagenes, Ventas, Envios
+from .forms import fRegistroProducto, fExtra_Imagenes
+from .models import Productos, Imagenes, Ventas, Envios
 # app users
 from apps.users.models import Direcciones
+from apps.users.forms import fRegistroDirecciones
+# app payment
+from apps.payment.stripe import PaymentStripe, SimpleStripe
+# app utils
+from utils.models.operations import get_percent, get_iva
 
 def vHome(request):
     productos = Productos.objects.all()
@@ -68,7 +71,6 @@ def vComprar(request):
             pass
     return redirect('mkt:marketplace')
 
-
 def vAccionesCarrito(request):
     if request.method == 'POST':
         pdt_uuid = request.POST.get('pdt-id', '')
@@ -100,81 +102,114 @@ def vLimpiarCarrito(request):
 # checar que esté logueado
 def vPagarCarrito(request):
     total = 0
-    try:
-        cart = request.session['cart']
-        uuid_list = list(cart)
-        products = Productos.objects.filter(uuid__in = uuid_list)
-        for p in products:
-            item = cart.get(str(p.uuid))
-            total = total + (int(item['pdt_quantity']) * p.get_public_price())
-            item.update({'stock': str(p.cantidad)})
-    except KeyError:
-        cart = []
+    cart_obj = Cart(request)
+    cart = cart_obj.cart
+    uuid_list = list(cart)
+    good_uuid_list = []
+    for pdt_uuid in uuid_list:
+        if check_uuid(pdt_uuid):
+            good_uuid_list.append(pdt_uuid)
+    products = Productos.objects.filter(uuid__in = good_uuid_list)
+    for p in products:
+        item = cart.get(str(p.uuid))
+        if item is not None:
+            try:
+                item_quantity = item.get('pdt_quantity', 1)
+                # restar o remover del carrito si no hay en existencia (luego)----
+                if item_quantity <= p.cantidad:
+                    total = total + (item_quantity * p.get_public_price())
+                    item.update({'stock': str(p.cantidad)})
+                # -----
+            except (TypeError, ValueError):
+                cart_obj.remove(p)
+                messages.error(request, 'No hemos podido verificar la información del producto <b>{}</b> por lo que lo hemos removido del carrito para que no sea cobrado'.format(p.nombre))
     show_payment = True if len(cart) > 0 else False
     if request.method == 'POST':
-        save_card = request.POST.get('save-card', False)
-        default_message = 'No especificado'
-        token = request.POST.get('stripeToken', '')
-        payment = PaymentStripe(request.user)
         address = request.POST.get('address', '')
+        card = request.POST.get('card', '')
+        token = request.POST.get('stripeToken', '')
+        save_card = request.POST.get('save-card', False)
         sale = None
+        charge = None
+        payment = PaymentStripe(request.user)
         try:
             address = request.user.direcciones.get(uuid = address)
-            # create sale
+            print(payment.stripe_cost(total))
+            # total = payment.stripe_cost()
+
             sale = Ventas.objects.create(total = total, usuario = request.user)
             if isinstance(sale, Ventas):
-                # make payment
-                customer = payment.customer
-                if save_card:
-                    card = payment.add_customer_card(token)
-                    token = card['id']
+                if token:
+                    # componer aquí después-----
+                    tok = token
+                    if save_card:
+                        new_card = payment.add_customer_card(token)
+                        if new_card is not None:
+                            tok = new_card['id']
+                            charge = payment.make_charge(amount = int(total*100), token = tok, invoice = sale.folio, customer = payment.customer)
+                        else:
+                            charge = payment.make_charge(amount = int(total*100), token = tok, invoice = sale.folio)
+                    else:
+                        charge = payment.make_charge(amount = int(total*100), token = tok, invoice = sale.folio)
+                    # -------
+                elif card:
+                    cus_card = payment.customer_card_exists(card)
+                    if cus_card:
+                        charge = payment.make_charge(amount = int(total*100), token = card, invoice = sale.folio, customer = payment.customer)
+                    else:
+                        messages.error(request, 'La tarjeta guardada seleccionada no existe. Por favor intente con otra o agregue otro método de pago')
+                        return redirect('mkt:pagarCarrito')
                 else:
-                    customer = None
-                charge = payment.make_charge(amount = int(total*100), token = token, invoice = sale.folio, customer = customer)
-                if charge['status'] == 'succeeded':
-                    # add id charge to sale
-                    sale.id_payment = charge['id']
-                    sale.save(update_fields = ['id_payment'])
-                    # add products to sales_products
-                    for p in products:
-                        try:
-                            item = cart.get(str(p.uuid))
-                            sale.productos.add(p, through_defaults = {'precio': p.get_public_price(), 'cantidad': int(item['pdt_quantity'])})
-                            # delete quantity from product stock
-                            p.cantidad = p.cantidad - int(item['pdt_quantity'])
-                            p.save()
-                        except KeyError:
-                            continue
-                    # clean cart
-                    request.session["cart"] = {}
-                    request.session.modified = True
-                    # create shipping
-                    Envios.objects.create(venta = sale, direccion = address,
-                        direccion_txt = 'Calle: {}, no. int.:{}, no. ext.:{}, colonia:{}, c.p.:{}, referencias:{}, instrucciones:{}'.format(
-                            address.calle,
-                            address.no_interior,
-                            address.no_calle,
-                            address.colonia,
-                            address.codigo_postal,
-                            address.referencias,
-                            address.instrucciones
-                        )
-                    )
-                    recent_payment = True
-                    messages.success(request, 'Muchas gracias. Su compra se ha completado exitosamente.', extra_tags = 'success_payment')
-                    return render(request, 'mkt/success_payment.html')
+                    messages.error(request, 'No se proporcionó ningún método de pago')
+                    return redirect('mkt:pagarCarrito')
+                if charge is not None:
+                    if charge['status'] == 'succeeded':
+                        sale.id_payment = charge['id']
+                        sale.save(update_fields = ['id_payment'])
+                        for p in products:
+                            try:
+                                item = cart.get(str(p.uuid))
+                                if item is not None:
+                                    item_quantity = item.get('pdt_quantity', 1)
+                                    sale.productos.add(p, through_defaults = {'precio': p.get_public_price(), 'cantidad': item_quantity})
+                                    # delete quantity from product stock
+                                    p.cantidad = p.cantidad - item_quantity
+                                    p.save()
+                            except (TypeError, ValueError):
+                                continue                    
+                        request.session["cart"] = {}
+                        request.session.modified = True
+                        Envios.objects.create(venta = sale, direccion = address, direccion_txt = 'Calle: {}, no. int.:{}, no. ext.:{}, colonia:{}, c.p.:{}, referencias:{}, instrucciones:{}'.format(address.calle, address.no_interior, address.no_calle, address.colonia, address.codigo_postal, address.referencias, address.instrucciones))
+                        return render(request, 'mkt/success_payment.html')
+                    else:
+                        sale.delete()
+                        messages.error(request, 'No se ha podido procesar el pago. Inténtelo de nuevo <small>(error 001)</small>')
                 else:
                     sale.delete()
+                    messages.error(request, 'No se ha podido procesar el pago. Inténtelo de nuevo <small>(error 002)</small>')
             else:
-                messages.error(request, 'No hemos podido realizar el pago. Inténtelo de nuevo')
+                messages.error(request, 'No se ha podido procesar el pago. Inténtelo de nuevo <small>(error 003)</small>')
         except Direcciones.DoesNotExist:
             messages.error(request, 'Por favor selecciona una dirección de envío')
         except Exception as e:
             print(e)
-            messages.error(request, 'No hemos podido realizar el pago. Inténtelo de nuevo')
+            messages.error(request, 'No se ha podido procesar el pago. Inténtelo de nuevo <small>(error 004)</small>')
         return redirect('mkt:pagarCarrito')
-    payment = PaymentStripe(request.user, initialize_customer = False)
-    cards = payment.get_customer_cards(request.user)
+    simple_stripe = SimpleStripe(request.user)
+
+    billing_cost = decimal.Decimal(43.10)
+    total =  simple_stripe.stripe_cost(total + get_iva(billing_cost)) + total
+    cards = simple_stripe.get_customer_cards()
     fdireccion = fRegistroDirecciones(label_suffix = '')
     context = {'cart': cart, 'total': total, 'fdireccion': fdireccion, 'show_payment': show_payment, 'cards': cards}
     return render(request, 'mkt/pago.html', context)
+
+def check_uuid(value):
+    if value is not None and not isinstance(value, uuid.UUID):
+        input_form = 'int' if isinstance(value, int) else 'hex'
+        try:
+            uuid.UUID(**{input_form: value})
+            return True
+        except (AttributeError, ValueError):
+            return False
+    return value

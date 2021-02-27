@@ -1,33 +1,45 @@
+# python
+from decimal import Decimal
 # Stripe
 import stripe
 # app payment
 from .models import Customers
+# app utils
+from utils.models.operations import get_percent, get_iva
 
 stripe.api_key = "sk_test_51I7T2kE4OKuuVvsDk8L6AodX0LfALn6k4IvE52tdKvSPlWDohb1BgwmQBZOOjIleZOyrPlC4uCCMoGbGSFbxVkpp00lfgh18e2"
+stripe_raise_errors = (stripe.error.APIConnectionError, stripe.error.APIError, stripe.error.AuthenticationError, stripe.error.CardError, stripe.error.IdempotencyError, stripe.error.InvalidRequestError, stripe.error.RateLimitError, stripe.error.StripeError)
 
 class PaymentStripe():
-    def __init__(self, user, initialize_customer = True):
+    def __init__(self, user):
         self.user = user
-        if initialize_customer:
-            self.customer, self.local_customer = self.get_or_create_customer()
+        self.customer, self.local_customer = self.get_or_create_customer()
 
     def make_charge(self, amount, token, invoice, customer = None):
-        if customer is not None:
-            charge = stripe.Charge.create(
-                amount = amount,
-                currency = 'mxn',
-                description = f'Cargo de compra en compratabasco.com con folio {invoice}',
-                source = token,
-                customer = customer
-            )
-        else:
-            charge = stripe.Charge.create(
-                amount = amount,
-                currency = 'mxn',
-                description = f'Cargo de compra en compratabasco.com con folio {invoice}',
-                source = token,
-            )
-        return charge
+        try:
+            if customer is not None:
+                charge = stripe.Charge.create(
+                    amount = amount,
+                    currency = 'mxn',
+                    description = f'Cargo de compra en compratabasco.com con folio {invoice}',
+                    source = token,
+                    customer = customer
+                )
+            else:
+                charge = stripe.Charge.create(
+                    amount = amount,
+                    currency = 'mxn',
+                    description = f'Cargo de compra en compratabasco.com con folio {invoice}',
+                    source = token
+                )
+            return charge
+        except stripe_raise_errors as e:
+            print(e)
+            pass
+        except Exception as e:
+            print(e)
+            pass
+        return None
     
     def create_customer(self, local_create = True, remote_create = True):
         customer = None
@@ -41,20 +53,12 @@ class PaymentStripe():
                 )
             if local_create:
                 local_customer = Customers.objects.create(user = self.user, id_customer = (customer['id'] if hasattr(customer, 'id') else self.customer['id']))
-        except (
-            stripe.error.RateLimitError,
-            stripe.error.InvalidRequestError,
-            stripe.error.AuthenticationError,
-            stripe.error.APIConnectionError,
-            stripe.error.StripeError) as e:
-            print(e)
-            # log al fallar create_customer
+        except stripe_raise_errors as e:
+            pass
         except Exception as e:
-            print(e)
-            # log al fallar create_customer
+            pass
         return (customer, local_customer)
             
-    
     def get_customer(self):
         customer = None
         local_customer = None
@@ -63,22 +67,13 @@ class PaymentStripe():
             customer = stripe.Customer.retrieve(local_customer.id_customer)
         except Customers.DoesNotExist:
             pass
-            # log al fallar get_customer
-        except (
-            stripe.error.RateLimitError,
-            stripe.error.InvalidRequestError,
-            stripe.error.AuthenticationError,
-            stripe.error.APIConnectionError,
-            stripe.error.StripeError) as e:
-            print(e)
-            # log al fallar get_customer
+        except stripe_raise_errors as e:
+            pass
         except Exception as e:
-            print(e)
-            # log al fallar get_customer
+            pass
         return (customer, local_customer)
 
     def get_or_create_customer(self):
-        print('holiiiiii')
         customer, local_customer = self.get_customer()
         if customer is not None and local_customer is not None:
             return (customer, local_customer)
@@ -103,24 +98,15 @@ class PaymentStripe():
                 self.customer['id'],
                 source = token
             )
-
-        except (
-            stripe.error.RateLimitError,
-            stripe.error.InvalidRequestError,
-            stripe.error.AuthenticationError,
-            stripe.error.APIConnectionError,
-            stripe.error.StripeError,
-            stripe.error.CardError) as e:
+        except stripe_raise_errors as e:
             print(e)
-            # log al fallar get_customer
         except Exception as e:
             print(e)
-            # log al fallar get_customer
         return card
     
-    def get_customer_cards(self, user):
+    def get_customer_cards(self):
         card_list = []
-        customer = self.get_customer()[0]
+        customer = self.customer
         if customer is not None:
             try:
                 cards = stripe.Customer.list_sources(customer['id'])
@@ -135,15 +121,27 @@ class PaymentStripe():
                             'name': card['name']
                         }
                     )
-            except (
-                stripe.error.RateLimitError,
-                stripe.error.InvalidRequestError,
-                stripe.error.AuthenticationError,
-                stripe.error.APIConnectionError,
-                stripe.error.StripeError) as e:
-                print(e)
-                # log al fallar create_customer
+            except stripe_raise_errors as e:
+                pass
             except Exception as e:
-                print(e)
-                # log al fallar create_customer
+                pass
         return card_list
+    
+    def customer_card_exists(self, card_id):
+        try:
+            customer = self.customer
+            card = stripe.Customer.retrieve_source(customer['id'], card_id)
+            return True
+        except stripe_raise_errors as e:
+            return False
+    
+    def stripe_cost(self, amount):
+        stripe_trans = Decimal(3.6)
+        stripe_total = get_percent(amount, stripe_trans) + 3
+        return round(get_iva(stripe_total) + stripe_total, 2)
+
+class SimpleStripe(PaymentStripe):
+    def __init__(self, user):
+        super(SimpleStripe).__init__()
+        self.user = user
+        self.customer, self.local_customer = self.get_customer()

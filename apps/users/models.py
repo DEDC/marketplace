@@ -1,15 +1,22 @@
 # django
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from .mixins.email_confirmation import EmailConfirmation
+from django.conf import settings
+from django.core.validators import RegexValidator
 # utils
 from utils.models.control import ControlInfo
 
-class Usuarios(AbstractUser):
+class Usuarios(EmailConfirmation, AbstractUser):
+    html_confirmation_content = 'mail/users/account_confirmation.html'
+    text_confirmation_content = 'mail/users/account_confirmation.txt'
+    from_ = settings.DEFAULT_FROM_EMAIL
     class Meta:
         ordering = ['-is_superuser', 'date_joined']
     username = models.CharField('Nombre de usuario', max_length = 100, null = True, blank = True)
     email = models.EmailField('Correo electrónico', unique = True)
-    phone_number = models.CharField('Número de teléfono', max_length = 10, unique = True)
+    phone_number = models.CharField('Número de teléfono', max_length = 10, validators = [RegexValidator('^[0-9]*$', 'Ingrese un número de telefono correcto')])
+    is_confirmed = models.BooleanField(default = False, editable = False)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['phone_number', 'first_name', 'last_name', 'username']
 

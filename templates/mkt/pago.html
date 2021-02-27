@@ -1,5 +1,6 @@
 {% extends 'mkt/base.html' %}
 {% load static %}
+{% load humanize %}
 {% block head %}
 {{block.super}}
 {% if show_payment %}
@@ -7,10 +8,7 @@
 <script defer src="{% static 'js/stripe/index.js' %}"></script>
 {% endif %}
 {% endblock %}
-{% load static %}
-{% load humanize %}
-{% block cart %}
-{% endblock %}
+{% block cart %}{% endblock %}
 {% block main %}
 {% if show_payment %}
 <div class="container">
@@ -45,7 +43,7 @@
                                     <button name="decrement" class="btn-small btn-flat white"><i
                                             class="tiny material-icons">remove</i></button>
                                     <button name="remove" class="btn-small btn-flat white"><i
-                                            class="tiny material-icons">close</i></button>
+                                            class="tiny material-icons">delete</i></button>
                                 </div>
                             </div>
                         </form>
@@ -57,10 +55,9 @@
         <h4 style="text-align: right;">Total:&nbsp;&nbsp;<b>$ {{total|intcomma}} mxn</b></h4>
     </div>
     <form method="post" id="payment-form">
+        {% csrf_token %}
         <div class="card-panel">
             <h5 class="pdt-name">Información de envío</h5>
-            <div class="divider"></div>
-            <br>
             {% if not request.user.is_authenticated %}
             <div class="row">
                 <h6 class="center-align">Es necesario <a href="#login-modal" class="modal-trigger">Iniciar
@@ -72,69 +69,58 @@
             {% else %}
             <div class="row">
                 <a href="#address-modal"
-                    class="btn bk-green right waves-effect waves-block waves-light modal-trigger"><i
+                    class="btn-small bk-green right waves-effect waves-block waves-light modal-trigger"><i
                         class="material-icons">add</i></a>
             </div>
-            <ul class="collection">
-                {% for d in user.direcciones.all %}
-                <li class="collection-item">
-                    <label>
-                        <input {% if d.default %}checked{% endif %} class="with-gap" name="address" type="radio"
-                            value="{{d.uuid}}" />
-                        <span>CP {{d.codigo_postal}} / {{d.alias}}</span>
-                    </label>
-                </li>
-                {% empty %}
-                <li class="collection-item">
-                    <h6 class="center-align grey-text">Agrega una dirección a la cual llevaremos tu pedido</h6>
-                </li>
-                {% endfor %}
-            </ul>
+            <div class="input-field">
+                <span class="grey-text">Selecciona una dirección de envío</span>
+                <select name="address" id="address">
+                    {% for d in user.direcciones.all %}
+                    <option value="{{d.uuid}}" {% if d.default %}selected{% endif %}>CP {{d.codigo_postal}} / {{d.alias}}</option>
+                    {% empty %}
+                    <option value="">Agrega una dirección a donde enviaremos tu pedido</option>
+                    {% endfor %}
+                </select>
+            </div>
             {% endif %}
         </div>
         <div class="card-panel">
             <h5 class="pdt-name">Información de pago</h5>
-            <div class="divider"></div>
-            <br><br>
-            <ul class="collection">
-                {% for c in cards %}
-                <li class="collection-item">
-                    <label>
-                        <input class="with-gap" name="card" type="radio" value="{{c.id}}" />
-                        <span>{{c.brand}} <b>xxxx xxxx xxxx {{c.last4}} / {% if c.name %}{{c.name}}{% endif%}
-                            </b></span>
-                    </label>
-                </li>
-                {% empty %}
-                <li class="collection-item">
-                    <h6 class="center-align grey-text">No hay tarjetas guardadas</h6>
-                </li>
-                {% endfor %}
-            </ul>
-            <form action="/charge" method="post" id="payment-form">
-                <div class="form-row">
-                    <div class="frm-stp">
-                        <div class="fset-stp">
-                            <div class="stp-row">
-                                <input id="cardname" data-tid="elements_examples.form.name_placeholder" type="text"
-                                    placeholder="Nombre del titular" required="" autocomplete="name"
-                                    class="browser-default" required>
-                            </div>
+            <div class="input-field">
+                <span class="grey-text">Selecciona una tarjeta guardada</span>
+                <select name="card" id="card">
+                    {% for c in cards %}
+                    <option value="{{c.id}}">{{c.brand}} xxxx xxxx xxxx {{c.last4}} / {% if c.name %}{{c.name}}{% endif %}</option>
+                    {% empty %}
+                    <option value="">No hay tarjetas guardadas</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <p class="center-align grey-text">O <a href="#" id="add_method" class="blue-text">agrega otro método de pago</a></p>
+            <div id="cont-payment">
+                <div class="row">
+                    <a href="#" class="right grey-text" id="remove_method"><i class="tiny material-icons">close</i></a>
+                </div>
+                <div class="frm-stp">
+                    <div class="fset-stp">
+                        <div class="stp-row">
+                            <input id="cardname" data-tid="elements_examples.form.name_placeholder" type="text"
+                                placeholder="Nombre del titular" required="" autocomplete="name" class="browser-default"
+                                required>
                         </div>
                     </div>
-                    <div id="card-element"></div>
-                    <div id="card-errors" role="alert"></div>
                 </div>
-                <br>
-                <p>
+                <div id="card-element"></div>
+                <p class="center-align">
                     <label>
                         <input type="checkbox" class="filled-in" checked="checked" name="save-card" />
                         <span>Guardar este método de pago para futuras compras</span>
                     </label>
                 </p>
-                <button class="btn bk-green">Pagar</button>
-            </form>
-            {% csrf_token %}
+                <div id="card-errors" role="alert"></div>
+            </div>
+            <br>
+            <button class="btn bk-green">Pagar</button>
         </div>
     </form>
     {% include 'users/direccion_modal.html' %}
