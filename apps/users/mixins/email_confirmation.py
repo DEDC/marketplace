@@ -16,7 +16,7 @@ class SendEmail:
     to = ''
 
     def send_user_confirmation(self, user, request, *args, **kwargs):
-        self.subject = 'Activa tu cuenta de usuario en CompraTabasco.com'
+        self.subject = 'Activa tu cuenta de usuario en CompraTabasco'
         self.to = user.email
         current_site = get_current_site(request)
         text_content = render_to_string(self.text_user_confirmation, {'user': user, 'domain': current_site.domain, 'uid': urlsafe_base64_encode(force_bytes(user.pk)), 'token': account_activation_token.make_token(user)})
@@ -25,7 +25,7 @@ class SendEmail:
         
     
     def send_payment_success(self, user, invoice):
-        self.subject = 'Compra exitosa en CompraTabasco.com'
+        self.subject = 'Compra exitosa en CompraTabasco'
         self.to = user.email
         text_content = render_to_string(self.text_payment_success, {'user': user, 'invoice': invoice})
         html_content = render_to_string(self.html_payment_success, {'user': user, 'invoice': invoice})
