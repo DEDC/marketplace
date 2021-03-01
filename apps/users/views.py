@@ -24,7 +24,7 @@ def vRegistro(request):
             usuario.save()
             autenticar = authenticate(username = fusuario.cleaned_data['email'], password = fusuario.cleaned_data['password'])
             login(request, autenticar)
-            sent = usuario.send_email_confirmation(request.user, request)
+            sent = usuario.send_user_confirmation(request.user, request)
             if sent:
                 messages.success(request, 'Registro de usuario exitoso')
             else:

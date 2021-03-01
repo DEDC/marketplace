@@ -137,7 +137,8 @@ class PaymentStripe():
     
     def stripe_cost(self, amount):
         stripe_trans = Decimal(3.6)
-        stripe_total = get_percent(amount, stripe_trans) + 3
+        stripe_cost = 3
+        stripe_total = get_percent(amount, stripe_trans) + stripe_cost
         return round(get_iva(stripe_total) + stripe_total, 2)
 
 class SimpleStripe(PaymentStripe):

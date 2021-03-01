@@ -1,0 +1,1 @@
+¡Hola {{user.first_name}}!. Tu pedido se ha realizado exitosamente. Gracias por apoyar a las empresas locales. ID de seguimiento: {{invoice}}

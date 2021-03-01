@@ -1,15 +1,17 @@
 # django
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from .mixins.email_confirmation import EmailConfirmation
+from .mixins.email_confirmation import SendEmail
 from django.conf import settings
 from django.core.validators import RegexValidator
 # utils
 from utils.models.control import ControlInfo
 
-class Usuarios(EmailConfirmation, AbstractUser):
-    html_confirmation_content = 'mail/users/account_confirmation.html'
-    text_confirmation_content = 'mail/users/account_confirmation.txt'
+class Usuarios(SendEmail, AbstractUser):
+    html_user_confirmation = 'mail/users/account_confirmation.html'
+    text_user_confirmation = 'mail/users/account_confirmation.txt'
+    html_payment_success = 'mail/payment/payment_success.html'
+    text_payment_success = 'mail/payment/payment_success.txt'
     from_ = settings.DEFAULT_FROM_EMAIL
     class Meta:
         ordering = ['-is_superuser', 'date_joined']

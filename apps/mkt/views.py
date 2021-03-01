@@ -101,15 +101,23 @@ def vLimpiarCarrito(request):
 
 # checar que esté logueado
 def vPagarCarrito(request):
-    total = 0
+    # initializing variables
+    simple_stripe = SimpleStripe(request.user)
     cart_obj = Cart(request)
+    fdireccion = fRegistroDirecciones(label_suffix = '')
+    total = 0
+    shipping_cost = decimal.Decimal(43.10)
+    cards = simple_stripe.get_customer_cards()
     cart = cart_obj.cart
     uuid_list = list(cart)
     good_uuid_list = []
+    # checking if cart has correct uuid
     for pdt_uuid in uuid_list:
         if check_uuid(pdt_uuid):
             good_uuid_list.append(pdt_uuid)
+    # getting products from model
     products = Productos.objects.filter(uuid__in = good_uuid_list)
+    # calc price quantity * product quantity 
     for p in products:
         item = cart.get(str(p.uuid))
         if item is not None:
@@ -123,20 +131,21 @@ def vPagarCarrito(request):
             except (TypeError, ValueError):
                 cart_obj.remove(p)
                 messages.error(request, 'No hemos podido verificar la información del producto <b>{}</b> por lo que lo hemos removido del carrito para que no sea cobrado'.format(p.nombre))
+    # calc price + shipping + stripe
+    shipping_cost = round(get_iva(shipping_cost) + shipping_cost, 2)
+    total = total + shipping_cost
+    total = total + simple_stripe.stripe_cost(total)
     show_payment = True if len(cart) > 0 else False
     if request.method == 'POST':
+        payment = PaymentStripe(request.user)
         address = request.POST.get('address', '')
         card = request.POST.get('card', '')
         token = request.POST.get('stripeToken', '')
         save_card = request.POST.get('save-card', False)
         sale = None
         charge = None
-        payment = PaymentStripe(request.user)
         try:
             address = request.user.direcciones.get(uuid = address)
-            print(payment.stripe_cost(total))
-            # total = payment.stripe_cost()
-
             sale = Ventas.objects.create(total = total, usuario = request.user)
             if isinstance(sale, Ventas):
                 if token:
@@ -164,6 +173,7 @@ def vPagarCarrito(request):
                     return redirect('mkt:pagarCarrito')
                 if charge is not None:
                     if charge['status'] == 'succeeded':
+                        request.user.send_payment_success(request.user, sale.folio)
                         sale.id_payment = charge['id']
                         sale.save(update_fields = ['id_payment'])
                         for p in products:
@@ -194,13 +204,7 @@ def vPagarCarrito(request):
         except Exception as e:
             print(e)
             messages.error(request, 'No se ha podido procesar el pago. Inténtelo de nuevo <small>(error 004)</small>')
-        return redirect('mkt:pagarCarrito')
-    simple_stripe = SimpleStripe(request.user)
-
-    billing_cost = decimal.Decimal(43.10)
-    total =  simple_stripe.stripe_cost(total + get_iva(billing_cost)) + total
-    cards = simple_stripe.get_customer_cards()
-    fdireccion = fRegistroDirecciones(label_suffix = '')
+        return redirect('mkt:pagarCarrito')    
     context = {'cart': cart, 'total': total, 'fdireccion': fdireccion, 'show_payment': show_payment, 'cards': cards}
     return render(request, 'mkt/pago.html', context)
 
