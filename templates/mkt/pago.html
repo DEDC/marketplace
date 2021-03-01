@@ -52,6 +52,7 @@
             </li>
             {% endfor %}
         </ul>
+        <h5 style="text-align: right;">Costo de envío:&nbsp;&nbsp;<b>$ {{shipping_cost|intcomma}} mxn</b></h5>
         <h4 style="text-align: right;">Total:&nbsp;&nbsp;<b>$ {{total|intcomma}} mxn</b></h4>
     </div>
     <form method="post" id="payment-form">

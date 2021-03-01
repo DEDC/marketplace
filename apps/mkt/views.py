@@ -205,7 +205,7 @@ def vPagarCarrito(request):
             print(e)
             messages.error(request, 'No se ha podido procesar el pago. Inténtelo de nuevo <small>(error 004)</small>')
         return redirect('mkt:pagarCarrito')    
-    context = {'cart': cart, 'total': total, 'fdireccion': fdireccion, 'show_payment': show_payment, 'cards': cards}
+    context = {'cart': cart, 'total': total, 'fdireccion': fdireccion, 'show_payment': show_payment, 'cards': cards, 'shipping_cost': shipping_cost}
     return render(request, 'mkt/pago.html', context)
 
 def check_uuid(value):
