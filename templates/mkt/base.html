@@ -89,7 +89,7 @@
     {% if not request.user.is_confirmed %}
     <div class="uk-alert-warning" uk-alert>
         <a class="uk-alert-close" uk-close></a>
-        <p>Es necesario que confirmes tu correo davide011596@gmail.com. Enviamos un enlace de activación, por favor
+        <p>Es necesario que confirmes tu correo {{request.user.email}}. Enviamos un enlace de activación, por favor
             revisa tu bandeja de entrada o en correo no deseado.</p>
     </div>
     {% endif %}
