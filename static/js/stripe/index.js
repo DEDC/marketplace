@@ -1,6 +1,6 @@
 'use strict'
 
-var stripe = Stripe('pk_test_51I7T2kE4OKuuVvsDzt6ZZA4jnOq18zmAKFsNh7p3zJ8qAOoPPppvnPOGXQcfGBHCLoxupyKCsWg6flBeKFXreuHD00vOFme0XO')
+var stripe = Stripe('pk_live_51I7T2kE4OKuuVvsDF4talTmj4SYyhYfulAJvPsknmlHvDKqcBMxdrVlVsErxqYUx09qRCOQ0CWwUmB2NLa9ZSXGR00AQRGb5Tt')
 var elements = stripe.elements()
 var style = {
   base: {
