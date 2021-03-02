@@ -62,8 +62,8 @@
                     <p class="center-align">
                         <label>
                             {{form_user.privcheck}}
-                            <span class="black-text">He leído y acepto los <a href="#" target="_blank">Términos y
-                                    Condiciones</a></span>
+                            <span class="black-text">He leído y acepto las <a href="{% url 'condiciones_uso' %}"
+                                    target="_blank">Condiciones de uso</a></span>
                         </label>
                         <span class="help-text red-text">{{form_user.privcheck.errors}}</span>
                     </p>

@@ -20,8 +20,11 @@ from apps.payment.stripe import PaymentStripe, SimpleStripe
 # app utils
 from utils.models.operations import get_percent, get_iva
 
+class CondicionesUso(TemplateView):
+    template_name = 'mkt/condiciones_uso.html'
+
 def vHome(request):
-    productos = Productos.objects.all()
+    productos = Productos.objects.filter(activo = True)
     return render(request, 'mkt/home.html', {'productos': productos})
 
 def vProducto(request, slug, uuid):
@@ -34,7 +37,7 @@ class SearchProduct(ListView):
     def get_queryset(self):
         q = self.request.GET.get('q', '')
         lookup = (Q(nombre__icontains = q) | Q(folio__icontains = q))
-        productos = Productos.objects.filter(lookup)
+        productos = Productos.objects.filter(lookup, activo = True)
         return productos
     
     def get_context_data(self, **kwargs):
@@ -173,7 +176,6 @@ def vPagarCarrito(request):
                     return redirect('mkt:pagarCarrito')
                 if charge is not None:
                     if charge['status'] == 'succeeded':
-                        request.user.send_payment_success(request.user, sale.folio)
                         sale.id_payment = charge['id']
                         sale.save(update_fields = ['id_payment'])
                         for p in products:
