@@ -23,4 +23,4 @@ class ControlInfo(models.Model):
 
 def path_image(instance, filename):
     extfile = filename.split('.')[-1]
-    return 'image/products/{}/img-{}.{}'.format(instance.uuid, str(instance.uuid)[:8], extfile)
+    return 'images/products/{}/img-{}.{}'.format(instance.uuid, str(instance.uuid)[:8], extfile)

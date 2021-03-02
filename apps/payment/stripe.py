@@ -1,5 +1,7 @@
-# python
+# Python
 from decimal import Decimal
+# Django
+from django.contrib import messages
 # Stripe
 import stripe
 # app payment
@@ -15,7 +17,7 @@ class PaymentStripe():
         self.user = user
         self.customer, self.local_customer = self.get_or_create_customer()
 
-    def make_charge(self, amount, token, invoice, customer = None):
+    def make_charge(self, amount, token, invoice, request, customer = None):
         try:
             if customer is not None:
                 charge = stripe.Charge.create(
@@ -33,6 +35,14 @@ class PaymentStripe():
                     source = token
                 )
             return charge
+        except stripe.error.CardError as e:
+            messages.error(request, 'La tarjeta fue declinada')
+            # print('Status is: %s' % e.http_status)
+            # print('Code is: %s' % e.code)
+            # param is '' in this case
+            # print('Param is: %s' % e.param)
+            # print('Message is: %s' % e.user_message)
+
         except stripe_raise_errors as e:
             print(e)
             pass

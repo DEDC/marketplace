@@ -1,9 +1,10 @@
 # django
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from .mixins.email_confirmation import SendEmail
 from django.conf import settings
 from django.core.validators import RegexValidator
+# app users
+from .mixins.email_confirmation import SendEmail
 # utils
 from utils.models.control import ControlInfo
 

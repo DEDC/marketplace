@@ -1,4 +1,4 @@
-# django
+# Django
 from django.urls import path
 # app users
 from .views import vLogin, vLogout, vRegistro, vConfirmUser, vDirecciones, ListOrders

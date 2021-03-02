@@ -4,8 +4,10 @@
 {% block head %}
 {{block.super}}
 {% if show_payment %}
+{% if request.user.is_authenticated %}
 <link rel="stylesheet" href="{% static 'css/stripe/style.css' %}">
 <script defer src="{% static 'js/stripe/index.js' %}"></script>
+{% endif %}
 {% endif %}
 {% endblock %}
 {% block cart %}{% endblock %}
@@ -87,6 +89,15 @@
         </div>
         <div class="card-panel">
             <h5 class="pdt-name">Información de pago</h5>
+            {% if not request.user.is_authenticated %}
+            <div class="row">
+                <h6 class="center-align">Es necesario <a href="#login-modal" class="modal-trigger">Iniciar
+                        sesión</a>
+                    o <a href="#register-modal" class="modal-trigger">crear una
+                        cuenta</a>
+                </h6>
+            </div>
+            {% else %}
             <div class="input-field">
                 <span class="grey-text">Selecciona una tarjeta guardada</span>
                 <select name="card" id="card">
@@ -121,7 +132,14 @@
                 <div id="card-errors" role="alert"></div>
             </div>
             <br>
+            {% if request.user.is_confirmed %}
             <button class="btn bk-green">Pagar</button>
+            {% else %}
+            <h6 class="red-text">
+                Es necesario que confirmes tu correo {{request.user.email}} para realizar la compra. Enviamos un enlace de activación, por favor revisa tu bandeja de entrada o en correo no deseado.
+            </h6>
+            {% endif %}
+            {% endif %}
         </div>
     </form>
     {% include 'users/direccion_modal.html' %}

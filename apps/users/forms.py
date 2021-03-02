@@ -1,6 +1,6 @@
 # Django
 from django import forms
-# App usuarios
+# app usuarios
 from .models import Usuarios, Direcciones
 
 class fLogin(forms.Form):

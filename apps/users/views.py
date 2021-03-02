@@ -10,7 +10,7 @@ from .user_tokens import account_activation_token
 # app users
 from .forms import fRegistroUsuarios, fLogin, fRegistroDirecciones
 from .models import Usuarios
-# app ventas
+# app mkt
 from apps.mkt.models import Ventas
 
 def vRegistro(request):

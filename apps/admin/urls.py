@@ -1,5 +1,7 @@
+# Django
 from django.urls import path
 from apps.admin.views import CreateProduct, ListProducts, ListSales, ListShipping, UpdateProduct
+# app admin
 from .views import vAdmin
 
 app_name = 'admin'

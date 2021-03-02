@@ -155,16 +155,16 @@ def vPagarCarrito(request):
                         new_card = payment.add_customer_card(token)
                         if new_card is not None:
                             tok = new_card['id']
-                            charge = payment.make_charge(amount = int(total*100), token = tok, invoice = sale.folio, customer = payment.customer)
+                            charge = payment.make_charge(amount = int(total*100), token = tok, invoice = sale.folio, customer = payment.customer, request = request)
                         else:
-                            charge = payment.make_charge(amount = int(total*100), token = tok, invoice = sale.folio)
+                            charge = payment.make_charge(amount = int(total*100), token = tok, invoice = sale.folio, request = request)
                     else:
-                        charge = payment.make_charge(amount = int(total*100), token = tok, invoice = sale.folio)
+                        charge = payment.make_charge(amount = int(total*100), token = tok, invoice = sale.folio, request = request)
                     # -------
                 elif card:
                     cus_card = payment.customer_card_exists(card)
                     if cus_card:
-                        charge = payment.make_charge(amount = int(total*100), token = card, invoice = sale.folio, customer = payment.customer)
+                        charge = payment.make_charge(amount = int(total*100), token = card, invoice = sale.folio, customer = payment.customer, request = request)
                     else:
                         messages.error(request, 'La tarjeta guardada seleccionada no existe. Por favor intente con otra o agregue otro método de pago')
                         return redirect('mkt:pagarCarrito')
@@ -190,6 +190,7 @@ def vPagarCarrito(request):
                         request.session["cart"] = {}
                         request.session.modified = True
                         Envios.objects.create(venta = sale, direccion = address, direccion_txt = 'Calle: {}, no. int.:{}, no. ext.:{}, colonia:{}, c.p.:{}, referencias:{}, instrucciones:{}'.format(address.calle, address.no_interior, address.no_calle, address.colonia, address.codigo_postal, address.referencias, address.instrucciones))
+                        request.user.send_payment_success(request.user, sale.folio)
                         return render(request, 'mkt/success_payment.html')
                     else:
                         sale.delete()

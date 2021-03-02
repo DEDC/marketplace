@@ -1,9 +1,11 @@
+# Django
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_text
+# app users
 from ..user_tokens import account_activation_token
 
 class SendEmail:
@@ -23,7 +25,6 @@ class SendEmail:
         html_content = render_to_string(self.html_user_confirmation, {'user': user, 'domain': current_site.domain, 'uid': urlsafe_base64_encode(force_bytes(user.pk)), 'token': account_activation_token.make_token(user)})
         return self.send_user_email(html_content, text_content)
         
-    
     def send_payment_success(self, user, invoice):
         self.subject = 'Compra exitosa en CompraTabasco'
         self.to = user.email

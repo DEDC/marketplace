@@ -2,7 +2,7 @@
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-# App mkt
+# app mkt
 from apps.mkt.views import vHome
 
 urlpatterns = [

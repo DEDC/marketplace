@@ -1,8 +1,9 @@
-# django
+# Python
+from decimal import Decimal
+# Django
 from django.db import models
 from django.utils.text import slugify
 from django.core.validators import MaxValueValidator, MinValueValidator
-from decimal import Decimal
 # apps users
 from apps.users.models import Usuarios, Direcciones
 # utils
