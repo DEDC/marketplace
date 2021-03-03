@@ -53,7 +53,7 @@ def vLogout(request):
 # Products
 class CreateProduct(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, CreateView):
     model = Productos
-    fields = ['nombre', 'precio', 'cantidad', 'descripcion', 'imagen', 'comision', 'tipo_comision']
+    fields = ['nombre', 'precio', 'cantidad', 'descripcion', 'imagen', 'comision', 'tipo_comision', 'activo']
     template_name = 'admin/productos/registro.html'
     success_url = reverse_lazy('admin:create_product')
     success_message = 'Producto registrado existosamente'
@@ -69,7 +69,7 @@ class CreateProduct(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin
     
 class UpdateProduct(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
     model = Productos
-    fields = ['nombre', 'precio', 'cantidad', 'descripcion', 'imagen', 'comision', 'tipo_comision']
+    fields = ['nombre', 'precio', 'cantidad', 'descripcion', 'imagen', 'comision', 'tipo_comision', 'activo']
     query_pk_and_slug = True
     success_url = reverse_lazy('admin:list_products')
     template_name = 'admin/productos/editar.html'

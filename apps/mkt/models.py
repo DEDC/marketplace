@@ -24,6 +24,7 @@ class Productos(ControlInfo):
     descripcion = models.CharField('Descripción del producto', max_length = 200)
     comision = models.DecimalField('Comisión del producto', max_digits = 10, decimal_places = 2, validators = [MinValueValidator(1.00), MaxValueValidator(10000000.00)], null = True)
     tipo_comision = models.CharField('Tipo de comisión', max_length = 50, choices = [('directa', 'Por monto directo'), ('porcentaje', 'Por porcentaje')], null = True)
+    activo = models.BooleanField(default = True)
     imagen = models.ImageField('Imagen principal', upload_to = path_image)
 
     def get_public_price(self):
