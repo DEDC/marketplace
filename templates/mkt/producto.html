@@ -1,4 +1,12 @@
 {% extends 'mkt/base.html' %}
+{% block head %}
+{{block.super}}
+<meta property="og:title" content="{{producto.nombre}}" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="{{request.build_absolute_uri}}" />
+<meta property="og:image" content="{{producto.imagen.url}}" />
+<meta property="og:description" content="{{producto.descripcion}}" />
+{% endblock %}
 {% load static %}
 {% load humanize %}
 {% load customtags %}
