@@ -125,7 +125,7 @@ def vPagarCarrito(request):
         item = cart.get(str(p.uuid))
         if item is not None:
             try:
-                item_quantity = item.get('pdt_quantity', 1)
+                item_quantity = int(item.get('pdt_quantity', 1))
                 # restar o remover del carrito si no hay en existencia (luego)----
                 if item_quantity <= p.cantidad:
                     total = total + (item_quantity * p.get_public_price())
