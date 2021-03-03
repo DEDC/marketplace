@@ -1,12 +1,13 @@
 # Django
 from django.urls import path
-from apps.admin.views import CreateProduct, ListProducts, ListSales, ListShipping, UpdateProduct, ListUsers
 # app admin
-from .views import vAdmin
+from .views import vAdmin, vLogin, vLogout, CreateProduct, ListProducts, ListSales, ListShipping, UpdateProduct, ListUsers
 
 app_name = 'admin'
 
 urlpatterns = [
+    path('login', vLogin, name = 'login'),
+    path('logout', vLogout, name = 'logout'),
     path('', vAdmin.as_view(), name = 'home'),
     path('registrar/producto', CreateProduct.as_view(), name = 'create_product'),
     path('editar/producto/<int:pk>/<slug:slug>', UpdateProduct.as_view(), name = 'update_product'),

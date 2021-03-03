@@ -1,1 +1,51 @@
 {% extends 'admin/base.html' %}
+{% load static %}
+{% block head %}
+{{block.super}}
+<style>
+    .sidenav {
+        width: 0;
+    }
+
+    header,
+    main,
+    footer {
+        padding-left: 0;
+    }
+
+    .container {
+        position: fixed;
+        max-width: 40rem;
+        top: 50%;
+        left: 50%;
+        /* bring your own prefixes */
+        transform: translate(-50%, -50%);
+    }
+</style>
+{% endblock %}
+{% block navbar %}{% endblock %}
+{% block sidenav %}{% endblock %}
+{% block main %}
+<div class="container">
+    <div class="container">
+        <img src="{% static 'images/logo.png' %}" alt="">
+        <br><br>
+        <div class="row center-align">
+            <form method="post">
+                {% csrf_token %}
+                <div class="input-field">
+                    {{flogin.username}}
+                    {{flogin.username.label_tag}}
+                    <span class="help-text red-text">{{flogin.username.errors}}</span>
+                </div>
+                <div class="input-field">
+                    {{flogin.password}}
+                    {{flogin.password.label_tag}}
+                    <span class="help-text red-text">{{flogin.password.errors}}</span>
+                </div>
+                <button class="btn btn-width bk-green">Ingresar</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

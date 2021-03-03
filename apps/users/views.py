@@ -33,9 +33,6 @@ def vRegistro(request):
         else:
             messages.error(request, 'Formulario inválido. Por favor corrija los errores marcados en rojo')
     return redirect('mkt:marketplace')
-        # fusuario = fRegistroUsuarios(label_suffix = '')
-    # context = {'fusuario': fusuario}
-    # return render(request, 'users/registro.html', context)
 
 def vConfirmUser(request, uidb64, token):
     try:
