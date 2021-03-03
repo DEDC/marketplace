@@ -1,0 +1,39 @@
+{% extends 'admin/base.html' %}
+{% load humanize %}
+{% block main %}
+<div class="container container-lg container-margin">
+    <div class="options">
+        <div class="btns">
+            <a class="btn grey darken-2" href="#">Agregar<i class="material-icons left">add</i></a>
+        </div>
+        <form>
+            <span uk-search-icon></span>
+            <input type="text" name="search" id="search" style="width: 200px;">
+        </form>
+    </div>
+    <div class="card-panel">
+        <h5 class="grey-text center-align text-darken-2"><b>Listado de usuarios</b></h5>
+        <p class="grey-text">{{object_list.count}} resultado(s)</p>
+        <table class="striped responsive-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Fecha de creación</th>
+                    <th>último inicio</th>
+                    <th>Compras</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usu in object_list %}
+                <tr>
+                    <td>{{usu.get_full_name}}</td>
+                    <td>{{usu.date_joined}}</td>
+                    <td>{{usu.last_login}}</td>
+                    <td>{{usu.ventas.count}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

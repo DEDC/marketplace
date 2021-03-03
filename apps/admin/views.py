@@ -9,6 +9,8 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 # app mkt
 from apps.mkt.models import Productos, Ventas, Envios
+# app users
+from apps.users.models import Usuarios
 
 class vAdmin(View):
     def get(self, request, *args, **kwargs):
@@ -50,3 +52,8 @@ class ListSales(ListView):
 class ListShipping(ListView):
     model = Envios
     template_name = 'admin/envios/listar.html'
+
+# Users
+class ListUsers(ListView):
+    model = Usuarios
+    template_name = 'admin/usuarios/listar.html'
