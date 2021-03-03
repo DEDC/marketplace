@@ -55,7 +55,7 @@ class fResetPassword(forms.Form):
         return repeat_password
 
 class fResetPasswordEmail(forms.Form):
-    email = forms.EmailField(label = 'Ingrese el correo electrónico que registró', label_suffix = '')
+    email_reset = forms.EmailField(label = 'Ingrese el correo electrónico que registraste', label_suffix = '')
 
 class fSetPasswordEmail(fResetPassword):
     current_password = None

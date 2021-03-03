@@ -8,7 +8,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_text
 from .user_tokens import account_activation_token
 # app users
-from .forms import fRegistroUsuarios, fLogin, fRegistroDirecciones
+from .forms import fRegistroUsuarios, fLogin, fRegistroDirecciones, fResetPasswordEmail, fSetPasswordEmail
 from .models import Usuarios
 # app mkt
 from apps.mkt.models import Ventas
@@ -50,6 +50,52 @@ def vConfirmUser(request, uidb64, token):
     else:
         messages.error(request, 'No fue posible activar su cuenta con este enlace', extra_tags = 'email_confirmation')
     return redirect('mkt:marketplace')
+
+def vResetPasswordEmail(request):
+    if request.method == 'POST':
+        fresetpass = fResetPasswordEmail(request.POST)
+        if fresetpass.is_valid():
+            try:
+                user = Usuarios.objects.get(email = fresetpass.cleaned_data['email_reset'])
+                sended = user.reset_password_email(user, request)
+                if sended:
+                    messages.success(request, 'Correo enviado exitosamente. Por favor revisa tu bandeja de entrada o spam')
+                else:
+                    messages.error(request, 'No hemos podido enviar un correo')
+            except Usuarios.DoesNotExist:
+                messages.error(request, 'Ese correo electrónico no se encuentra registrado')
+        else:
+            messages.error(request, 'Formulario inválido')
+        return redirect('user:reset_password')
+    else:
+        fresetpass = fResetPasswordEmail()
+    context = {'fresetpass': fresetpass}
+    return render(request, 'users/reset_password.html', context)
+
+def PasswordResetEmailConfirm(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64)
+        user = Usuarios.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, Usuarios.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        if request.method == 'POST':
+            fsetpass = fSetPasswordEmail(request.POST)
+            if fsetpass.is_valid():
+                new_password = fsetpass.cleaned_data['new_password']
+                user.set_password(new_password)
+                user.save()
+                messages.success(request, 'Tu contraseña ha sido cambiada exitosamente')
+                return redirect('mkt:marketplace')
+            else:
+                messages.error(request, 'Por favor corrija los errores marcados en rojo')
+        else:
+            fsetpass = fSetPasswordEmail()
+        context = {'fsetpass': fsetpass}
+        return render(request, 'users/set_password.html', context)
+    else:
+        messages.error(request, 'El enlace ya no está disponible')
+    return redirect('users:reset_password')
 
 def vLogin(request):
     if request.method == 'POST':

@@ -13,6 +13,8 @@ class SendEmail:
     text_user_confirmation = ''
     html_payment_success = ''
     text_payment_success = ''
+    html_reset_password = ''
+    text_reset_password = ''
     subject = ''
     from_ = ''
     to = ''
@@ -30,6 +32,14 @@ class SendEmail:
         self.to = user.email
         text_content = render_to_string(self.text_payment_success, {'user': user, 'invoice': invoice})
         html_content = render_to_string(self.html_payment_success, {'user': user, 'invoice': invoice})
+        return self.send_user_email(html_content, text_content)
+    
+    def reset_password_email(self, user, request):
+        self.subject = 'Recuperación de contraseña en CompraTabasco'
+        self.to = user.email
+        current_site = get_current_site(request)
+        text_content = render_to_string(self.text_reset_password, {'domain': current_site, 'uid': urlsafe_base64_encode(force_bytes(user.pk)), 'user': user, 'token': account_activation_token.make_token(user)})
+        html_content = render_to_string(self.html_reset_password, {'domain': current_site, 'uid': urlsafe_base64_encode(force_bytes(user.pk)), 'user': user, 'token': account_activation_token.make_token(user)})
         return self.send_user_email(html_content, text_content)
     
     def send_user_email(self, html_content, text_content):

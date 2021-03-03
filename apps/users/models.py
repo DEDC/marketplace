@@ -13,6 +13,8 @@ class Usuarios(SendEmail, AbstractUser):
     text_user_confirmation = 'mail/users/account_confirmation.txt'
     html_payment_success = 'mail/payment/payment_success.html'
     text_payment_success = 'mail/payment/payment_success.txt'
+    text_reset_password = 'mail/users/password_reset.txt'
+    html_reset_password = 'mail/users/password_reset.html'
     from_ = settings.DEFAULT_FROM_EMAIL
     class Meta:
         ordering = ['-is_superuser', 'date_joined']

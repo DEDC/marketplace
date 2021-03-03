@@ -1,5 +1,5 @@
 {% autoescape off %}
-¡Hola {{ user.first_name }}!. 
+¡Hola {{ user.first_name }}!.
 Tu registro en CompraTabasco.com fue creado exitosamente. Por favor da click en el enlace de abajo para activar tu cuenta.
 <a href="https://{{ domain }}{% url 'user:confirm_user' uidb64=uid token=token %}">Activar mi cuenta ahora</a>
 {% endautoescape %}
