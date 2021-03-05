@@ -286,3 +286,26 @@ form .row {
     color: #424242 !important;
     box-sizing: border-box !important;
 }
+
+.cat {
+    webkit-box-shadow: 0 0 20px rgb(0 0 0 / 8%) !important;
+    box-shadow: 0 0 20px rgb(0 0 0 / 8%) !important;
+}
+
+.cat img:hover {
+    opacity: 1;
+    transition: 1s ease;
+}
+
+.cat .cat-text {
+    padding: 15px;
+    word-wrap: break-word;
+}
+
+.cat .cat-text .small-txt {
+    color: #4b4b4b;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}

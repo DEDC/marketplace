@@ -25,6 +25,7 @@ class Productos(ControlInfo):
     comision = models.DecimalField('Comisión del producto', max_digits = 10, decimal_places = 2, validators = [MinValueValidator(1.00), MaxValueValidator(10000000.00)], null = True)
     tipo_comision = models.CharField('Tipo de comisión', max_length = 50, choices = [('directa', 'Por monto directo'), ('porcentaje', 'Por porcentaje')], null = True)
     activo = models.BooleanField(default = True)
+    categorias = models.ManyToManyField('Categorias', related_name = 'cat_pdt')
     imagen = models.ImageField('Imagen principal', upload_to = path_image)
 
     def get_public_price(self):
@@ -60,6 +61,19 @@ class Productos(ControlInfo):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.nombre)
         super(Productos, self).save(*args, **kwargs)
+
+class Categorias(ControlInfo):
+    identifier = 'CAT'
+    nombre = models.CharField('Nombre de la categoría', max_length = 100)
+    slug = models.SlugField(editable = False, blank = True)
+    parent = models.ForeignKey('self', related_name = 'parent_cat', on_delete = models.CASCADE, null = True, blank = True)
+
+    def __str__(self):
+        return self.nombre
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.nombre)
+        super(Categorias, self).save(*args, **kwargs)
 
 class Imagenes(ControlInfo):
     folio = None

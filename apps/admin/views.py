@@ -10,7 +10,7 @@ from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 # app mkt
-from apps.mkt.models import Productos, Ventas, Envios
+from apps.mkt.models import Productos, Ventas, Envios, Categorias
 # app users
 from apps.users.models import Usuarios
 from apps.users.forms import fLogin
@@ -53,7 +53,7 @@ def vLogout(request):
 # Products
 class CreateProduct(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, CreateView):
     model = Productos
-    fields = ['nombre', 'precio', 'cantidad', 'descripcion', 'imagen', 'comision', 'tipo_comision', 'activo']
+    fields = ['nombre', 'precio', 'cantidad', 'descripcion', 'imagen', 'comision', 'tipo_comision', 'activo', 'categorias']
     template_name = 'admin/productos/registro.html'
     success_url = reverse_lazy('admin:create_product')
     success_message = 'Producto registrado existosamente'
@@ -69,7 +69,7 @@ class CreateProduct(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin
     
 class UpdateProduct(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, UpdateView):
     model = Productos
-    fields = ['nombre', 'precio', 'cantidad', 'descripcion', 'imagen', 'comision', 'tipo_comision', 'activo']
+    fields = ['nombre', 'precio', 'cantidad', 'descripcion', 'imagen', 'comision', 'tipo_comision', 'activo', 'categorias']
     query_pk_and_slug = True
     success_url = reverse_lazy('admin:list_products')
     template_name = 'admin/productos/editar.html'
@@ -115,6 +115,19 @@ class ListUsers(LoginRequiredMixin, UserPassesTestMixin, ListView):
     template_name = 'admin/usuarios/listar.html'
     login_url = reverse_lazy('admin:login')
     redirect_field_name = 'redirect_to'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+# Categories
+class CreateCategory(LoginRequiredMixin, SuccessMessageMixin, UserPassesTestMixin, CreateView):
+    model = Categorias
+    fields = ['nombre', 'parent']
+    login_url = reverse_lazy('admin:login')
+    redirect_field_name = 'redirect_to'
+    success_url = reverse_lazy('admin:create_category')
+    success_message = 'Producto registrado existosamente'
+    template_name = 'admin/categorias/registro.html'
 
     def test_func(self):
         return self.request.user.is_superuser

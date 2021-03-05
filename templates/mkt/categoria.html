@@ -6,31 +6,7 @@
 {% include 'templatetags/search_box.html' %}
 <div class="container container-lg">
     <div class="row pdt-row">
-        <div class="col xl3 l3 m4 s6">
-            <div class="card-panel cat">
-                <a href="{% url 'mkt:category' 'CAT-74397266-18' %}">
-                    <img class="responsive-img" src="{% static 'images/categories/accesorios.jpg' %}" alt="">
-                    <div class="cat-text">
-                        <span class="small-txt">Lo mas nuevo en</span>
-                        <h5 class="grey-text text-darken-3">ACCESORIOS</h5>
-                    </div>
-                </a>
-            </div>
-        </div>
-        <div class="col xl3 l3 m4 s6">
-            <div class="card-panel cat">
-                <a href="{% url 'mkt:category' 'CAT-74397266-17' %}">
-                    <img class="responsive-img" src="{% static 'images/categories/libros.jpg' %}" alt="">
-                    <div class="cat-text">
-                        <span class="small-txt">Los mejores</span>
-                        <h5 class="grey-text text-darken-3">LIBROS</h5>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
-    <div class="row pdt-row">
-        {% for p in productos %}
+        {% for p in object_list %}
         <div class="col xl3 l3 m6 s12">
             <div class="card-panel">
                 <div class="center-align">
@@ -49,6 +25,13 @@
                     <span class="red-text">Producto agotado</span>
                     {% endif %}
                 </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="container container-lg" style="margin-top: 50px;">
+            <div class="row center-align">
+                <i class="material-icons grey-text text-darken-2 large">search_off</i>
+                <h5 class="grey-text text-darken-2">No hay productos que coincidan con la búsqueda</h5>
             </div>
         </div>
         {% endfor %}

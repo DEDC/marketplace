@@ -2,7 +2,7 @@
 from django.conf.urls import handler404
 from django.urls import path
 # app mkt
-from .views import vHome, vAgregarCarrito, vProducto, vAccionesCarrito, vLimpiarCarrito, vPagarCarrito, vComprar, SearchProduct
+from .views import vHome, vAgregarCarrito, vProducto, vAccionesCarrito, vLimpiarCarrito, vPagarCarrito, vComprar, SearchProduct, CategoryProducts
 
 app_name = 'mkt'
 
@@ -15,5 +15,6 @@ urlpatterns = [
     path('carrito/limpiar', vLimpiarCarrito, name = 'limpCarrito'),
     path('carrito/pagar', vPagarCarrito, name = 'pagarCarrito'),
     path('comprar', vComprar, name = 'comprar'),
-    path('search', SearchProduct.as_view(), name = 'search')
+    path('search', SearchProduct.as_view(), name = 'search'),
+    path('categoria/<str:folio>', CategoryProducts.as_view(), name = 'category')
 ]

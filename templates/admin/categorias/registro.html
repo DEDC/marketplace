@@ -1,0 +1,39 @@
+{% extends 'admin/base.html' %}
+{% block main %}
+<div class="container container-lg container-margin">
+    <div class="options">
+        <div class="btns">
+            <a class="btn grey darken-2" href="#">Listado<i class="material-icons left">list</i></a>
+        </div>
+    </div>
+    <div class="card-panel">
+        <h5 class="center-align grey-text text-darken-2"><b>Registro de un producto</b></h5>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col l12 m12 s12">
+                    <div class="input-field">
+                        {{form.nombre.label_tag}}
+                        {{form.nombre}}
+                        <span class="helper-text red-text">{{form.nombre.errors}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col l12 m12 s12">
+                    <div class="input-field">
+                        {{form.parent}}
+                        {{form.parent.label_tag}}
+                        <span class="helper-text red-text">{{form.parent.errors}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col l12 m12 s12">
+                    <button class="btn grey darken-2 btn-block" type="submit">Registrar producto</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

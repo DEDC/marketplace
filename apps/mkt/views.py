@@ -11,7 +11,7 @@ from django.core.exceptions import ValidationError
 # app mkt
 from .cart import Cart
 from .forms import fRegistroProducto, fExtra_Imagenes
-from .models import Productos, Imagenes, Ventas, Envios
+from .models import Productos, Imagenes, Ventas, Envios, Categorias
 # app users
 from apps.users.models import Direcciones
 from apps.users.forms import fRegistroDirecciones
@@ -42,9 +42,20 @@ class SearchProduct(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['productos'] = self.get_queryset()
         context['q'] = self.request.GET.get('q', '')
         return context
+
+class CategoryProducts(ListView):
+    template_name = 'mkt/categoria.html'
+
+    def get_queryset(self):
+        folio = self.kwargs['folio']
+        try:
+            category = Categorias.objects.get(folio = folio)
+            productos = Productos.objects.filter(categorias__nombre = category)
+            return productos
+        except Categorias.DoesNotExist:
+            return []
 
 def vAgregarCarrito(request):
     if request.method == 'POST':
