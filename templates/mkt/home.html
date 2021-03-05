@@ -28,6 +28,17 @@
                 </a>
             </div>
         </div>
+        <div class="col xl3 l3 m4 s6">
+            <div class="card-panel cat">
+                <a href="{% url 'mkt:category' 'CAT-74397266-17' %}">
+                    <img class="responsive-img" src="{% static 'images/categories/artesanias.jpg' %}" alt="">
+                    <div class="cat-text">
+                        <span class="small-txt">Hermosas</span>
+                        <h5 class="grey-text text-darken-3">Artesanías</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
     </div>
     <div class="row pdt-row">
         {% for p in productos %}

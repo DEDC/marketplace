@@ -244,6 +244,8 @@ form .row {
 /* nuevooooooooooooooooooooooooooooo */
 
 .pdt-row {
+    display: -moz-flex;
+    display: -webkit-flex;
     display: flex;
     flex-wrap: wrap;
     flex-flow: row wrap;
