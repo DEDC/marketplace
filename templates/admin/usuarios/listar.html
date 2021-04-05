@@ -14,26 +14,73 @@
     <div class="card-panel">
         <h5 class="grey-text center-align text-darken-2"><b>Listado de usuarios</b></h5>
         <p class="grey-text">{{object_list.count}} resultado(s)</p>
-        <table class="striped responsive-table">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Fecha de creación</th>
-                    <th>último inicio</th>
-                    <th>Compras</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for usu in object_list %}
-                <tr>
-                    <td>{{usu.get_full_name}}</td>
-                    <td>{{usu.date_joined}}</td>
-                    <td>{{usu.last_login}}</td>
-                    <td>{{usu.ventas.count}}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <ul class="collapsible">
+            {% for u in object_list %}
+            <li>
+                <div class="collapsible-header">
+                    <i class="material-icons grey-text text-darken-2">person</i>
+                    <b class="grey-text text-darken-2">{{u.folio}}</b>&nbsp;&nbsp;
+                    <b class="grey-text">{{u.get_full_name}}</b>
+                    <div class="collapsible-secondary not-collapse">
+                        <a class='dropdown-trigger' href='#' data-target='dropdown{{u.pk}}'><i
+                                class="material-icons grey-text text-darken-2">more_vert</i></a>
+                        <ul id='dropdown{{u.pk}}' class='dropdown-content'>
+                            <li><a href="#" class="grey-text text-darken-2"><i class="material-icons">edit</i>Editar</a>
+                            </li>
+                            <li><a href="#!" class="grey-text text-darken-2"><i
+                                        class="material-icons">delete</i>Eliminar</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="collapsible-body">
+                    <div class="row">
+                        <div class="col l6 m6 s12">
+                            <h6 class="grey-text text-darken-1"><b>Correo electrónico</b></h6>
+                            <a href="mailto:{{u.email}}">{{u.email}}</a>
+                        </div>
+                        <div class="col l6 m6 s12">
+                            <h6 class="grey-text text-darken-1"><b>Teléfono</b></h6>
+                            <a href="tel:{{u.phone_number}}">{{u.phone_number}}</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col l6 m6 s12">
+                            <h6 class="grey-text text-darken-1"><b>Fecha de registro</b></h6>
+                            <span>{{u.date_joined}}</span>
+                        </div>
+                        <div class="col l6 m6 s12">
+                            <h6 class="grey-text text-darken-1"><b>Último inicio de sesión</b></h6>
+                            <span>{{u.last_login}}</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col l6 m6 s12">
+                            <h6 class="grey-text text-darken-1"><b>Activo</b></h6>
+                            {% if u.is_active %}
+                            <i class="material-icons green-text">check_circle</i>
+                            {% else %}
+                            <i class="material-icons red-text">cancel</i>
+                            {% endif %}
+                        </div>
+                        <div class="col l6 m6 s12">
+                            <h6 class="grey-text text-darken-1"><b>Administrador</b></h6>
+                            {% if u.is_superuser %}
+                            <i class="material-icons green-text">check_circle</i>
+                            {% else %}
+                            <i class="material-icons red-text">cancel</i>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col l6 m6 s12">
+                            <h6 class="grey-text text-darken-1"><b>Compras</b></h6>
+                            <span>{{u.ventas.count}}</span>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
     </div>
 </div>
 {% endblock %}
