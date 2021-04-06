@@ -9,8 +9,7 @@ from .models import Customers
 # app utils
 from utils.models.operations import get_percent, get_iva
 
-#stripe.api_key = "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"
-stripe.api_key = "sk_test_51I7T2kE4OKuuVvsDk8L6AodX0LfALn6k4IvE52tdKvSPlWDohb1BgwmQBZOOjIleZOyrPlC4uCCMoGbGSFbxVkpp00lfgh18e2"
+stripe.api_key = "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"
 stripe_raise_errors = (stripe.error.APIConnectionError, stripe.error.APIError, stripe.error.AuthenticationError, stripe.error.CardError, stripe.error.IdempotencyError, stripe.error.InvalidRequestError, stripe.error.RateLimitError, stripe.error.StripeError)
 
 class PaymentStripe():
