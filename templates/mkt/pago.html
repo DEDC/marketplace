@@ -79,7 +79,7 @@
                 <span class="grey-text">Selecciona una dirección de envío</span>
                 <select name="address" id="address">
                     {% for d in user.direcciones.all %}
-                    <option value="{{d.uuid}}" {% if d.default %}selected{% endif %}>CP {{d.codigo_postal}} / {{d.alias}}</option>
+                    <option value="{{d.uuid}}" {% if d.default %} selected {% endif %}>CP {{d.codigo_postal}} / {{d.alias}}</option>
                     {% empty %}
                     <option value="">Agrega una dirección a donde enviaremos tu pedido</option>
                     {% endfor %}
@@ -108,7 +108,8 @@
                     {% endfor %}
                 </select>
             </div>
-            <p class="center-align grey-text">O <a href="#" id="add_method" class="blue-text">agrega otro método de pago</a></p>
+            <p class="center-align grey-text">O <a href="#" id="add_method" class="blue-text">agrega otro método de
+                    pago</a></p>
             <div id="cont-payment">
                 <div class="row">
                     <a href="#" class="right grey-text" id="remove_method"><i class="tiny material-icons">close</i></a>
@@ -133,10 +134,14 @@
             </div>
             <br>
             {% if request.user.is_confirmed %}
-            <button class="btn bk-green">Pagar</button>
+            <button id="btn-pay" class="btn bk-green">Pagar</button>
+            <div class="progress">
+                <div class="indeterminate bk-green"></div>
+            </div>
             {% else %}
             <h6 class="red-text">
-                Es necesario que confirmes tu correo {{request.user.email}} para realizar la compra. Enviamos un enlace de activación, por favor revisa tu bandeja de entrada o en correo no deseado.
+                Es necesario que confirmes tu correo {{request.user.email}} para realizar la compra. Enviamos un enlace
+                de activación, por favor revisa tu bandeja de entrada o en correo no deseado.
             </h6>
             {% endif %}
             {% endif %}
