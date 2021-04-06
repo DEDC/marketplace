@@ -102,7 +102,7 @@ class Productos_Ventas(ControlInfo):
 
 class Envios(ControlInfo):
     identifier = 'CT-EV'
-    status_choices = (('preparando', 'Preparando'), ('enviado', 'Enviado'), ('entregado', 'Entregado'))
+    status_choices = (('preparando', 'Preparando'), ('enviado', 'Enviado'), ('entregado', 'Entregado'), ('cancelado', 'Cancelado'), ('reembolsado', 'Reembolsado'))
     venta = models.ForeignKey(Ventas, related_name = 'envio', on_delete = models.CASCADE)
     estatus = models.CharField(max_length = 50, choices = status_choices, default = 'preparando')
     direccion = models.ForeignKey(Direcciones, on_delete = models.SET_NULL, related_name = 'envios', null = True, editable = False)
