@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.views.generic.list import ListView
 from django.utils.http import urlsafe_base64_decode
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from .user_tokens import account_activation_token
 # app users
 from .forms import fRegistroUsuarios, fLogin, fRegistroDirecciones, fResetPasswordEmail, fSetPasswordEmail
@@ -36,7 +36,7 @@ def vRegistro(request):
 
 def vConfirmUser(request, uidb64, token):
     try:
-        uid = force_text(urlsafe_base64_decode(uidb64))
+        uid = force_str(urlsafe_base64_decode(uidb64))
         user = Usuarios.objects.get(pk=uid)
     except(TypeError, ValueError, OverflowError, Usuarios.DoesNotExist):
         user = None
